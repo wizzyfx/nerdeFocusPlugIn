@@ -21,7 +21,7 @@ chrome.runtime.onConnect.addListener(function (port) {
             }
         } else {
             // This accepts messages from the inspectedPage and sends them to the panel
-            port.postMessage({message: message, sender: sender});
+            port.postMessage({content: message, sender: sender});
         }
     }
 

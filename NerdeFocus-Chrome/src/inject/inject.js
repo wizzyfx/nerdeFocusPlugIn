@@ -3,44 +3,19 @@
  *
  * @author Ugurcan (Ugi) Kutluoglu <ugurcank@gmail.com>
  */
-var captureFocus = false;
 
 var NerdeFocus = (function () {
     "use strict";
-
-
+    var captureFocus = false;
     var showHighlight = false;
     var animateHighlight = false;
     var highlightColor = "#C00";
 
-    var initialize = function () {
-        document.addEventListener("focus", function () {
-            updateFocus();
-        }, true);
-
-        chrome.runtime.onMessage.addListener(function(message) {
-            if(message.action=="command"){
-                switch(message.content) {
-                    case 'startTrack':
-                        captureFocus = true;
-                        break;
-                    case 'stopTrack':
-                        captureFocus = false;
-                        break;
-                }
-            }
-        });
+    var sendObjectToDevTools = function (message) {
+        chrome.extension.sendMessage(message);
     };
 
-    var sendObjectToDevTools = function (message) {
-        // The callback here can be used to execute something on receipt
-        chrome.extension.sendMessage(message, function (message) {
-        });
-    }
-
-    /**
-     * https://github.com/yamadapc/jquery-getpath
-     */
+    // https://github.com/yamadapc/jquery-getpath
     var getPath = function (node) {
         var path, allSiblings;
         while (node.length) {
@@ -67,7 +42,7 @@ var NerdeFocus = (function () {
             node = parent;
         }
         return path;
-    }
+    };
 
     var isVisuallyHidden = function (node) {
         while (node.length) {
@@ -78,13 +53,42 @@ var NerdeFocus = (function () {
             node = node.parent();
         }
         return false;
-    }
+    };
 
     var updateFocus = function () {
-        if (captureFocus){
-            sendObjectToDevTools(getPath($(document.activeElement)));
+        if (captureFocus) {
+            var activeElem = $(document.activeElement);
+            sendObjectToDevTools({
+                action: "list",
+                itemPath: getPath(activeElem),
+                itemTag: activeElem.prop("tagName"),
+                itemHidden : isVisuallyHidden(activeElem)
+            });
         }
-    }
+    };
+
+    var initialize = function () {
+        chrome.runtime.onMessage.addListener(function (message) {
+            if (message.action == "command") {
+                switch (message.content) {
+                    case 'startTrack':
+                        captureFocus = true;
+                        document.addEventListener("focus", updateFocus, true);
+                        break;
+                    case 'stopTrack':
+                        captureFocus = false;
+                        document.removeEventListener("focus", updateFocus, true);
+                        break;
+                }
+            }
+        });
+    };
 
     initialize();
+
+    return {
+        getFocus: function () {
+            console.log(highlightColor);
+        }
+    };
 })();
