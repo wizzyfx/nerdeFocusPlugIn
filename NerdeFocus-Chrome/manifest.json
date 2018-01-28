@@ -1,0 +1,36 @@
+{
+  "name": "NerdeFocus",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Quickly debug focus problems when testing a page for accessibility issues.",
+  "homepage_url": "https://github.com/wizzyfx/nerdeFocus",
+  "devtools_page": "src/devtools/devtools.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "scripts": [
+      "src/bg/background.js"
+    ],
+    "persistent": false
+  },
+  "permissions": [
+    "tabs",
+    "http://*/*",
+    "https://*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "vendor/jquery-3.2.1.slim.min.js",
+        "src/inject/inject.js"
+      ]
+    }
+  ]
+}
