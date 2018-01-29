@@ -9,7 +9,7 @@
         console.log(message);
         if (message.sender.tab.id == chrome.devtools.inspectedWindow.tabId) {
             if (message.content.action === 'list') {
-                $('#history').append("<li>[" + message.content.itemTag + "] " + message.content.itemPath + "</li>").scrollTop(999999999999);
+                $('#history').append('<li class="' + (message.content.itemTag === 'BODY' ? 'reset' : '') + '\"><span class="tag">' + message.content.itemTag + '</span>' + message.content.itemPath + '</li>').scrollTop(999999999999);
             }
         }
         //port.postMessage(message);
@@ -38,5 +38,3 @@ $('#clearButton').click(function () {
 $('#highlightButton').click(function () {
     sendObjectToInspectedPage({action: "code", content: "NerdeFocus.getFocus();"});
 });
-
-

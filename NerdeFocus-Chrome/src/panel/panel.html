@@ -108,8 +108,23 @@
             font-size: 11px;
         }
 
+        #history li span.tag{
+            display: inline-block;
+            background: #861b7e;
+            color: #fff;
+            font-size: 85%;
+            padding: 0.15rem 0.25rem;
+            border-radius: 0.15rem;
+            margin-right: 0.25rem;
+            line-height: 0.5rem;
+        }
+
         #history li:last-of-type{
             background-color: #fffde8;
+        }
+
+        #history li.reset{
+            background-color: #fff0f0;
         }
 
         #history li::before{
@@ -140,7 +155,7 @@
     </div>
 </div>
 <ol id="history">
-    <li>Lorem ipsum dolor sit.</li>
+    <li><span class='tag'>HTML</span>Lorem ipsum dolor sit.</li>
     <li>Lorem ipsum dolor sit.</li>
     <li>Lorem ipsum dolor sit.</li>
     <li>Lorem ipsum dolor sit.</li>

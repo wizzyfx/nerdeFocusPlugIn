@@ -24,7 +24,7 @@ var NerdeFocus = (function () {
                 break;
             }
             name = name.toLowerCase();
-            if (realNode.id && $('#' + realNode.id).length === 1) {
+            if (realNode.id && document.querySelectorAll('[id='+realNode.id+']').length === 1) {
                 name = '#' + realNode.id;
                 path = name + (path ? '>' + path : '');
                 break;
@@ -62,8 +62,20 @@ var NerdeFocus = (function () {
                 action: "list",
                 itemPath: getPath(activeElem),
                 itemTag: activeElem.prop("tagName"),
-                itemHidden : isVisuallyHidden(activeElem)
+                itemHidden: isVisuallyHidden(activeElem)
             });
+        }
+    };
+
+    var resetChecker;
+    var checkReset = function () {
+        clearTimeout(resetChecker);
+        if (captureFocus) {
+            resetChecker = setTimeout(function () {
+                if ($(document.activeElement).prop("tagName") === "BODY") {
+                    updateFocus();
+                }
+            }, 200);
         }
     };
 
@@ -74,10 +86,12 @@ var NerdeFocus = (function () {
                     case 'startTrack':
                         captureFocus = true;
                         document.addEventListener("focus", updateFocus, true);
+                        document.addEventListener("focusout", checkReset, true);
                         break;
                     case 'stopTrack':
                         captureFocus = false;
                         document.removeEventListener("focus", updateFocus, true);
+                        document.removeEventListener("focusout", checkReset, true);
                         break;
                 }
             }
