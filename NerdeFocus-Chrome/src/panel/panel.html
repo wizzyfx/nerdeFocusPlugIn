@@ -55,12 +55,13 @@
             width: 4rem;
         }
 
-        .toolbarButton.highlightOn {
+        .toolbarButton.highlight {
             background-image: url("../../icons/select.svg");
             background-size: 1.0rem 1.0rem;
+            width: 7rem;
         }
 
-        .toolbarButton.animationOn {
+        .toolbarButton.animation {
             background-image: url("../../icons/tween.svg");
         }
 
@@ -72,7 +73,7 @@
             margin: 0;
         }
 
-        .colorPicker {
+        #colorPicker {
             height: 1.25rem;
             width: 1.25rem;
             border: 1px solid #ccc;
@@ -127,6 +128,11 @@
             background-color: #fff0f0;
         }
 
+        #history li.url{
+            background-color: #deeefe;
+            color: #3639ff;
+        }
+
         #history li::before{
             counter-increment: nerde;
             content: counter(nerde);
@@ -147,18 +153,14 @@
         <button id="clearButton" class="toolbarButton clear">Clear</button>
     </div>
     <div class="group">
-        <button id="highlightButton" class="toolbarButton highlightOn">Highlight Off</button>
-        <input class="colorPicker" type="color" value="#FF0000" title="Highlight Color" >
+        <button id="highlightButton" class="toolbarButton highlight">Show Highlight</button>
+        <input id="colorPicker" type="color" value="#FF0000" title="Highlight Color" >
     </div>
     <div class="group">
-        <button id="animationButton" class="toolbarButton animationOn">Animation On</button>
+        <button id="animationButton" class="toolbarButton animation on">Hide Animation</button>
     </div>
 </div>
 <ol id="history">
-    <li><span class='tag'>HTML</span>Lorem ipsum dolor sit.</li>
-    <li>Lorem ipsum dolor sit.</li>
-    <li>Lorem ipsum dolor sit.</li>
-    <li>Lorem ipsum dolor sit.</li>
 </ol>
 <script src="/vendor/jquery-3.2.1.slim.min.js"></script>
 <script src="panel.js"></script>
