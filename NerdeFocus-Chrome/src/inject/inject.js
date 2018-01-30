@@ -64,7 +64,8 @@ var NerdeFocus = (function () {
                 action: "list",
                 itemPath: getPath(activeElem),
                 itemTag: activeElem.prop("tagName"),
-                itemHidden: isVisuallyHidden(activeElem)
+                itemHidden: isVisuallyHidden(activeElem),
+                framed: window.self !== window.top
             });
         }
 
@@ -122,7 +123,6 @@ var NerdeFocus = (function () {
                     case 'updateColor':
                         highlightColor = message.rgb;
                         if (showHighlight) {
-                            console.log('0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.5)');
                             $('#nerdeFocusOverlay').css('outline', '0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.5)');
                         }
                         break;
@@ -147,7 +147,8 @@ var NerdeFocus = (function () {
 
         sendObjectToDevTools({
             action: "pageLoaded",
-            url: window.location.hostname
+            url: window.location.hostname,
+            framed: window.self !== window.top
         });
     };
 
@@ -157,7 +158,7 @@ var NerdeFocus = (function () {
 
     return {
         getFocus: function () {
-            console.log(highlightColor);
+            //console.log(highlightColor);
         }
     };
 })();

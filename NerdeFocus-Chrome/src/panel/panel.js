@@ -8,10 +8,12 @@
     port.onMessage.addListener(function (message) {
         if (message.sender.tab.id == chrome.devtools.inspectedWindow.tabId) {
             if (message.content.action === 'list') {
-                $('#history').append('<li class="' + (message.content.itemTag === 'BODY' ? 'reset' : '') + '\"><span class="tag">' + message.content.itemTag + '</span>' + message.content.itemPath + '</li>').scrollTop(999999999999);
+                $('#history').append('<li class="' + (message.content.itemTag === 'BODY' ? 'reset' : '') + '\"><span class="tag">' + message.content.itemTag + '</span>' + (message.content.framed ? '(In Frame)' : '') + message.content.itemPath + '</li>').scrollTop(999999999999);
             } else if (message.content.action === 'pageLoaded') {
-                $('#history').append('<li class="url">Page Loaded [' + message.content.url + ']</li>').scrollTop(999999999999);
 
+                if (!message.content.framed) {
+                    $('#history').append('<li class="url">Page Loaded [' + message.content.url + ']</li>').scrollTop(999999999999);
+                }
 
                 if ($('#captureButton').hasClass('pause')) {
                     sendObjectToInspectedPage({action: "command", content: "startTrack"});
@@ -19,7 +21,11 @@
 
                 if ($('#highlightButton').hasClass('on')) {
                     sendObjectToInspectedPage({action: "command", content: "startHighlight"});
-                    sendObjectToInspectedPage({action: "command", content: "updateColor", rgb:hexToRgb($('#colorPicker').val())});
+                    sendObjectToInspectedPage({
+                        action: "command",
+                        content: "updateColor",
+                        rgb: hexToRgb($('#colorPicker').val())
+                    });
                 }
 
                 if ($('#animationButton').hasClass('on')) {
@@ -38,7 +44,7 @@ function sendObjectToInspectedPage(message) {
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [255,0,0];
+    return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [255, 0, 0];
 }
 
 $('#captureButton').click(function () {
@@ -76,6 +82,6 @@ $('#animationButton').click(function () {
 });
 
 $('#colorPicker').change(function () {
-    sendObjectToInspectedPage({action: "command", content: "updateColor", rgb:hexToRgb($(this).val())});
+    sendObjectToInspectedPage({action: "command", content: "updateColor", rgb: hexToRgb($(this).val())});
 });
 
