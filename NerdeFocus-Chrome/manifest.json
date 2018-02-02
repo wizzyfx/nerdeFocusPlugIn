@@ -1,6 +1,6 @@
 {
   "name": "NerdeFocus",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "manifest_version": 2,
   "description": "Quickly debug focus problems when testing a page for accessibility issues.",
   "homepage_url": "https://github.com/wizzyfx/nerdeFocusPlugIn",
