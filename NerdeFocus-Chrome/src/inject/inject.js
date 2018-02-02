@@ -80,10 +80,12 @@ var NerdeFocus = (function () {
     var updateHighlight=function(){
         var elementTop = activeElem[0].getBoundingClientRect().top;
         var elementLeft = activeElem[0].getBoundingClientRect().left;
-        var elementBottom = elementTop + activeElem.outerHeight();
-        var elementRight = elementLeft + activeElem.outerWidth();
-        var viewportBottom = $('body').outerHeight();
-        var viewportRight = $('body').outerWidth();
+        //var elementBottom = elementTop + activeElem.outerHeight();
+        //var elementRight = elementLeft + activeElem.outerWidth();
+        var elementHeight = activeElem[0].offsetHeight;
+        var elementWidth= activeElem[0].offsetWidth;
+        var viewportBottom = $(window).height();
+        var viewportRight = $(window).width();
 
         if (elementLeft > viewportRight) {
             elementLeft = viewportRight;
@@ -93,7 +95,18 @@ var NerdeFocus = (function () {
             elementTop = viewportBottom;
         }
 
-        $('#nerdeFocusOverlay').css('left', elementLeft + 'px').css('top', elementTop + 'px').css('width', activeElem.outerWidth() + 'px').css('height', activeElem.outerHeight() + 'px');
+        if (elementHeight < 8) {
+            elementTop=elementTop+Math.round(8-elementHeight/2);
+            elementHeight = 8;
+        }
+
+        if (elementWidth < 8) {
+            elementLeft=elementLeft+Math.round(8-elementWidth/2);
+            elementWidth = 8;
+        }
+
+
+        $('#nerdeFocusOverlay').css('left', elementLeft + 'px').css('top', elementTop + 'px').css('width', elementWidth + 'px').css('height', elementHeight + 'px');
     }
 
     var resetChecker;
@@ -122,8 +135,9 @@ var NerdeFocus = (function () {
                         if(!showHighlight){
                             showHighlight = true;
                             $('#nerdeFocusOverlay').remove();
-                            $('body').append('<div id="nerdeFocusOverlay" style="background:none;position:fixed;top:0;left:0;width:0;height:0;outline:0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.5);outline-offset:0.1rem;z-index:9999997;transition:top 0.25s ease-in-out,left 0.25s ease-in-out,width 0.25s ease-in-out,height 0.25s ease-in-out;pointer-events:none!important;"></div>');
+                            $('body').append('<div id="nerdeFocusOverlay" style="background:none;position:fixed;top:0;left:0;width:0;height:0;outline:0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.85);outline-offset:0.1rem;z-index:999999999999;transition:top 0.25s ease-in-out,left 0.25s ease-in-out,width 0.25s ease-in-out,height 0.25s ease-in-out;pointer-events:none!important;"></div>');
                         }
+                        updateHighlight();
                         break;
                     case 'stopHighlight':
                         showHighlight = false;
@@ -132,25 +146,19 @@ var NerdeFocus = (function () {
                     case 'updateColor':
                         highlightColor = message.rgb;
                         if (showHighlight) {
-                            $('#nerdeFocusOverlay').css('outline', '0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.5)');
+                            $('#nerdeFocusOverlay').css('outline', '0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.85)');
                         }
                         break;
                 }
 
-                if (showHighlight || captureFocus) {
-                    if (!listeningFocus) {
-                        document.addEventListener("focus", updateFocus, true);
-                        document.addEventListener("focusout", checkReset, true);
-                        document.addEventListener("scroll", updateHighlight, true);
-                        setTimeout(function () {
-                            updateFocus();
-                        }, 200);
-                        listeningFocus = true;
-                    }
-                } else {
-                    document.removeEventListener("focus", updateFocus, true);
-                    document.removeEventListener("focusout", checkReset, true);
-                    listeningFocus = false;
+                if (!listeningFocus) {
+                    document.addEventListener("focus", updateFocus, true);
+                    document.addEventListener("focusout", checkReset, true);
+                    document.addEventListener("scroll", updateHighlight, true);
+                    setTimeout(function () {
+                        updateFocus();
+                    }, 200);
+                    listeningFocus = true;
                 }
             }
         });

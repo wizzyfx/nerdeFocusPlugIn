@@ -8,7 +8,7 @@
     port.onMessage.addListener(function (message) {
         if (message.sender.tab.id == chrome.devtools.inspectedWindow.tabId) {
             if (message.content.action === 'list' && !(message.content.itemTag  === 'BODY' && message.content.framed)) {
-                $('#history').append('<li class="' + (message.content.itemTag  === 'BODY' ? 'reset' : '') + '\"><span class="tag">' + message.content.itemTag + '</span>' + (message.content.framed ? '(In Frame)' : '') + message.content.itemPath + '</li>').scrollTop(999999999999);
+                $('#history').append('<li class="' + (message.content.itemTag  === 'BODY' ? 'reset' : '') + '\"><span class="tag">' + message.content.itemTag + '</span>' + (message.content.framed ? '(In Frame) ' : '') + message.content.itemPath + '</li>').scrollTop(999999999999);
             } else if (message.content.action === 'pageLoaded') {
 
                 if (!message.content.framed) {
