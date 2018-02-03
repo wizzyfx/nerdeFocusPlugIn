@@ -7,8 +7,8 @@
     // Listen to messages from the background page
     port.onMessage.addListener(function (message) {
         if (message.sender.tab.id == chrome.devtools.inspectedWindow.tabId) {
-            if (message.content.action === 'list' && !(message.content.itemTag  === 'BODY' && message.content.framed)) {
-                $('#history').append('<li class="' + (message.content.itemTag  === 'BODY' ? 'reset' : '') + '\"><span class="tag">' + message.content.itemTag + '</span>' + (message.content.framed ? '(In Frame) ' : '') + message.content.itemPath + '</li>').scrollTop(999999999999);
+            if (message.content.action === 'list' && !(message.content.itemTag === 'BODY' && message.content.framed)) {
+                $('#history').append('<li class="' + (message.content.itemTag === 'BODY' ? 'reset' : '') + '\"><span class="tag">' + message.content.itemTag + '</span>' + (message.content.framed ? '(In Frame) ' : '') + message.content.itemPath + '</li>').scrollTop(999999999999);
             } else if (message.content.action === 'pageLoaded') {
 
                 if (!message.content.framed) {
@@ -63,20 +63,23 @@ $('#clearButton').click(function () {
 
 $('#highlightButton').click(function () {
     if ($(this).hasClass('on')) {
-        $(this).removeClass('on').attr('aria-label','Turn On Focus Indicator');
+        $(this).removeClass('on').attr('aria-label', 'Turn On Focus Indicator');
         sendObjectToInspectedPage({action: "command", content: "stopHighlight"});
     } else {
-        $(this).addClass('on').attr('aria-label','Turn Off Focus Indicator');
+        $(this).addClass('on').attr('aria-label', 'Turn Off Focus Indicator');
         sendObjectToInspectedPage({action: "command", content: "startHighlight"});
+        if ($('#animationButton').hasClass('on')) {
+            sendObjectToInspectedPage({action: "command", content: "startAnimation"});
+        }
     }
 });
 
 $('#animationButton').click(function () {
     if ($(this).hasClass('on')) {
-        $(this).removeClass('on').attr('aria-label','Turn On Animation');
+        $(this).removeClass('on').attr('aria-label', 'Turn On Animation');
         sendObjectToInspectedPage({action: "command", content: "stopAnimation"});
     } else {
-        $(this).addClass('on').attr('aria-label','Turn Off Animation');
+        $(this).addClass('on').attr('aria-label', 'Turn Off Animation');
         sendObjectToInspectedPage({action: "command", content: "startAnimation"});
     }
 });

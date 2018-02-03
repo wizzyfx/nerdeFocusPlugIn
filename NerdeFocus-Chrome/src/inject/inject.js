@@ -8,7 +8,7 @@ var NerdeFocus = (function () {
     "use strict";
     var captureFocus = false;
     var showHighlight = false;
-    var animateHighlight = false;
+    var animateHighlight = true;
     var highlightColor = [255, 0, 0];
     var listeningFocus = false;
     var activeElem = $(document.activeElement);
@@ -77,36 +77,48 @@ var NerdeFocus = (function () {
         }
     };
 
-    var updateHighlight=function(){
-        var elementTop = activeElem[0].getBoundingClientRect().top;
-        var elementLeft = activeElem[0].getBoundingClientRect().left;
-        //var elementBottom = elementTop + activeElem.outerHeight();
-        //var elementRight = elementLeft + activeElem.outerWidth();
-        var elementHeight = activeElem[0].offsetHeight;
-        var elementWidth= activeElem[0].offsetWidth;
-        var viewportBottom = $(window).height();
-        var viewportRight = $(window).width();
+    var updateHighlight = function () {
 
-        if (elementLeft > viewportRight) {
-            elementLeft = viewportRight;
+        if (activeElem.prop("tagName") === "BODY") {
+            $('#nerdeFocusOverlay').css('left','4px').css('top','4px').css('width', $(window).width()-8 + 'px').css('height', $(window).height()-8 + 'px');
+        } else {
+            var elementTop = activeElem[0].getBoundingClientRect().top;
+            var elementLeft = activeElem[0].getBoundingClientRect().left;
+            var elementBottom = elementTop + activeElem.outerHeight();
+            var elementRight = elementLeft + activeElem.outerWidth();
+            var elementHeight = activeElem[0].offsetHeight;
+            var elementWidth = activeElem[0].offsetWidth;
+            var viewportBottom = $(window).height();
+            var viewportRight = $(window).width();
+
+            if (elementHeight < 8) {
+                elementTop = elementTop + Math.round(8 - elementHeight / 2);
+                elementHeight = 8;
+            }
+
+            if (elementWidth < 8) {
+                elementLeft = elementLeft + Math.round(8 - elementWidth / 2);
+                elementWidth = 8;
+            }
+
+            if (elementLeft > viewportRight) {
+                elementLeft = viewportRight;
+            }
+
+            if (elementTop > viewportBottom) {
+                elementTop = viewportBottom;
+            }
+
+            if (elementBottom < 0) {
+                elementTop = -elementHeight;
+            }
+
+            if (elementRight < 0) {
+                elementLeft = -elementWidth;
+            }
+
+            $('#nerdeFocusOverlay').css('left', elementLeft + 'px').css('top', elementTop + 'px').css('width', elementWidth + 'px').css('height', elementHeight + 'px');
         }
-
-        if (elementTop > viewportBottom) {
-            elementTop = viewportBottom;
-        }
-
-        if (elementHeight < 8) {
-            elementTop=elementTop+Math.round(8-elementHeight/2);
-            elementHeight = 8;
-        }
-
-        if (elementWidth < 8) {
-            elementLeft=elementLeft+Math.round(8-elementWidth/2);
-            elementWidth = 8;
-        }
-
-
-        $('#nerdeFocusOverlay').css('left', elementLeft + 'px').css('top', elementTop + 'px').css('width', elementWidth + 'px').css('height', elementHeight + 'px');
     }
 
     var resetChecker;
@@ -132,10 +144,10 @@ var NerdeFocus = (function () {
                         captureFocus = false;
                         break;
                     case 'startHighlight':
-                        if(!showHighlight){
+                        if (!showHighlight) {
                             showHighlight = true;
                             $('#nerdeFocusOverlay').remove();
-                            $('body').append('<div id="nerdeFocusOverlay" style="background:none;position:fixed;top:0;left:0;width:0;height:0;outline:0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.85);outline-offset:0.1rem;z-index:999999999999;transition:top 0.25s ease-in-out,left 0.25s ease-in-out,width 0.25s ease-in-out,height 0.25s ease-in-out;pointer-events:none!important;"></div>');
+                            $('body').append('<div id="nerdeFocusOverlay" style="transition-property:none;transition-duration:0.25s;transition-timing-function:ease-in-out;background:none;position:fixed;top:0;left:0;width:0;height:0;outline:4px solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.85);outline-offset:2px;z-index:999999999999;pointer-events:none!important;"></div>');
                         }
                         updateHighlight();
                         break;
@@ -148,6 +160,14 @@ var NerdeFocus = (function () {
                         if (showHighlight) {
                             $('#nerdeFocusOverlay').css('outline', '0.25rem solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.85)');
                         }
+                        break;
+                    case 'startAnimation':
+                        animateHighlight = true;
+                        $('#nerdeFocusOverlay').css('transition-property', 'all');
+                        break;
+                    case 'stopAnimation':
+                        animateHighlight = false;
+                        $('#nerdeFocusOverlay').css('transition-property', 'none');
                         break;
                 }
 
