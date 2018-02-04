@@ -12,6 +12,7 @@ var NerdeFocus = (function () {
     var highlightColor = [255, 0, 0];
     var listeningFocus = false;
     var activeElem = $(document.activeElement);
+    var inFrame = window.self !== window.top;
 
     var sendObjectToDevTools = function (message) {
         chrome.extension.sendMessage(message);
@@ -68,7 +69,7 @@ var NerdeFocus = (function () {
                 itemPath: getPath(activeElem),
                 itemTag: activeElem.prop("tagName"),
                 itemHidden: isVisuallyHidden(activeElem),
-                framed: window.self !== window.top
+                framed: inFrame
             });
         }
 
@@ -78,8 +79,7 @@ var NerdeFocus = (function () {
     };
 
     var updateHighlight = function () {
-
-        if (activeElem.prop("tagName") === "BODY") {
+        if (activeElem.prop("tagName") === "BODY" && !inFrame) {
             $('#nerdeFocusOverlay').css('left','4px').css('top','4px').css('width', $(window).width()-8 + 'px').css('height', $(window).height()-8 + 'px');
         } else {
             var elementTop = activeElem[0].getBoundingClientRect().top;
@@ -175,9 +175,7 @@ var NerdeFocus = (function () {
                     document.addEventListener("focus", updateFocus, true);
                     document.addEventListener("focusout", checkReset, true);
                     document.addEventListener("scroll", updateHighlight, true);
-                    setTimeout(function () {
-                        updateFocus();
-                    }, 200);
+                    setTimeout(function () {updateFocus();},200);
                     listeningFocus = true;
                 }
             }
@@ -186,7 +184,7 @@ var NerdeFocus = (function () {
         sendObjectToDevTools({
             action: "pageLoaded",
             url: window.location.hostname,
-            framed: window.self !== window.top
+            framed: inFrame
         });
     };
 
@@ -194,9 +192,9 @@ var NerdeFocus = (function () {
         initialize();
     });
 
-    return {
-        getFocus: function () {
-            //console.log(highlightColor);
-        }
-    };
+    // return {
+    //     getFocus: function () {
+    //         console.log(highlightColor);
+    //     }
+    // };
 })();

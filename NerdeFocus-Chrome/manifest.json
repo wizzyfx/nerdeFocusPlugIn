@@ -31,8 +31,7 @@
       "js": [
         "vendor/jquery-3.2.1.slim.min.js",
         "src/inject/inject.js"
-      ],
-      "css" : ["css/nerdeFocus.css"]
+      ]
     }
   ]
 }
