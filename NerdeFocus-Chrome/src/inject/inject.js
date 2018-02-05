@@ -144,7 +144,7 @@ var NerdeFocus = (function () {
                         if (!showHighlight) {
                             showHighlight = true;
                             $('#nerdeFocusOverlay').remove();
-                            $('body').append('<div id="nerdeFocusOverlay" style="transition-property:none;transition-duration:0.25s;transition-timing-function:ease-in-out;background:none;position:fixed;top:0;left:0;width:0;height:0;outline:4px solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.85);outline-offset:2px;z-index:999999999999;pointer-events:none!important;"></div>');
+                            $('body').append('<div id="nerdeFocusOverlay" style="transition-property:none;transition-duration:0.25s;transition-timing-function:ease-in-out;background:none;position:fixed;top:0;left:0;width:0;height:0;outline:4px solid rgba(' + highlightColor[0] + ',' + highlightColor[1] + ',' + highlightColor[2] + ',0.85);outline-offset:2px;z-index:999999999;pointer-events:none!important;"></div>');
                         }
                         updateHighlight();
                         break;

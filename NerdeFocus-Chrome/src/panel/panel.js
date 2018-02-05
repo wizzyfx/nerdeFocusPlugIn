@@ -19,11 +19,11 @@
                     (message.content.framed ? '<span class="info frame" title="Currently focused item is inside a frame"></span>' : '') +
                     message.content.itemPath +
                     '</li>'
-                ).scrollTop(999999999999);
+                ).scrollTop(999999999);
             } else if (message.content.action === 'pageLoaded') {
 
                 if (!message.content.framed) {
-                    $('#history').append('<li class="url">Page Loaded [' + message.content.url + ']</li>').scrollTop(999999999999);
+                    $('#history').append('<li class="url">Page Loaded [' + message.content.url + ']</li>').scrollTop(999999999);
                 }
 
                 if ($('#captureButton').hasClass('pause')) {
