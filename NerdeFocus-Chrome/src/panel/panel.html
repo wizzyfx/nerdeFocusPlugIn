@@ -25,13 +25,17 @@
 
         .group {
             display: inline-block;
-            padding: 0 0.5rem;
+            padding: 0 0.5rem 0 0;
             margin: 0.25rem 0 0.25rem 0;
             border-right: 1px solid #ccc;
         }
 
         .group:last-of-type {
             border: none;
+        }
+
+        .group:first-of-type {
+            padding: 0 0.5rem;
         }
 
         .toolbarButton {
@@ -44,7 +48,7 @@
             text-align: left;
         }
 
-        .toolbarButton::before{
+        .toolbarButton::before {
             font-family: "fontello";
             font-style: normal;
             font-weight: normal;
@@ -64,29 +68,63 @@
             vertical-align: text-bottom;
         }
 
+        .icon-warning-empty:before {
+            content: '\e800';
+        }
 
-        .icon-warning-empty:before { content: '\e800'; } /* '' */
-        .icon-code:before { content: '\e801'; } /* '' */
-        .icon-attention:before { content: '\e802'; } /* '' */
-        .icon-eye-off:before { content: '\e803'; } /* '' */
+        /* '' */
+        .icon-code:before {
+            content: '\e801';
+        }
 
-        .icon-pause-1:before { content: '\e804'; } /* '' */
-        .icon-record-1:before { content: '\e805'; } /* '' */
-        .icon-trash-1:before { content: '\e807'; } /* '' */
+        /* '' */
+        .icon-attention:before {
+            content: '\e802';
+        }
 
-        .icon-check-empty:before { content: '\f096'; } /* '' */
-        .icon-ok-squared:before { content: '\f14a'; } /* '' */
+        /* '' */
+        .icon-eye-off:before {
+            content: '\e803';
+        }
 
+        /* '' */
+
+        .icon-pause-1:before {
+            content: '\e804';
+        }
+
+        /* '' */
+        .icon-record-1:before {
+            content: '\e805';
+        }
+
+        /* '' */
+        .icon-trash-1:before {
+            content: '\e807';
+        }
+
+        /* '' */
+
+        .icon-check-empty:before {
+            content: '\f096';
+        }
+
+        /* '' */
+        .icon-ok-squared:before {
+            content: '\f14a';
+        }
+
+        /* '' */
 
         .toolbarButton.clear::before {
             content: '\e807';
         }
 
-        .toolbarButton.record, .toolbarButton.pause{
+        .toolbarButton.record, .toolbarButton.pause {
             width: 4.25rem;
         }
 
-        .toolbarButton.record::before{
+        .toolbarButton.record::before {
             content: '\e805';
         }
 
@@ -96,21 +134,37 @@
 
         .toolbarButton.highlight::before {
             content: '\f096';
+            position: relative;
+            top: 1px;
         }
 
         .toolbarButton.highlight.on::before {
             content: '\f14a';
+            top: 0px;
         }
 
         .toolbarButton.animation::before {
             content: '\f096';
+            position: relative;
+            top: 1px;
         }
 
         .toolbarButton.animation.on::before {
             content: '\f14a';
+            top: 0px;
         }
 
-        .toolbarButton:hover,.toolbarButton:focus {
+        .toolbarButton.animation:disabled {
+            color: #878787;
+            cursor: not-allowed;
+        }
+
+        #colorPicker:disabled {
+            border: 1px solid #9c9c9c;
+            cursor: not-allowed;
+        }
+
+        .toolbarButton:hover, .toolbarButton:focus {
             color: #454545;
         }
 
@@ -121,7 +175,7 @@
         #colorPicker {
             height: 1.25rem;
             width: 1.25rem;
-            border: 1px solid #ccc;
+            border: 1px solid #585858;
             display: inline-block;
             padding: 0;
             margin: 0 0 0 0.5rem;
@@ -143,42 +197,93 @@
             counter-reset: nerde;
         }
 
-        #history li{
+        #history li {
             display: block;
             list-style: none;
             padding: 0.33rem 1rem;
             border-bottom: 1px solid #eeeeee;
             font-family: "Menlo", sans-serif;
-            color: rgba(25,25,25,1);
+            color: rgba(25, 25, 25, 1);
             font-weight: lighter;
             font-size: 11px;
         }
 
-        #history li span.tag{
+        #history li span.tag {
             display: inline-block;
             background: #861b7e;
             color: #fff;
             font-size: 85%;
             padding: 0.15rem 0.25rem;
             border-radius: 0.15rem;
-            margin-right: 0.25rem;
-            line-height: 0.5rem;
+            margin-right: 0.2rem;
         }
 
-        #history li:last-of-type{
+        #history li:last-of-type {
             background-color: #fffde8;
         }
 
-        #history li.reset{
+        #history li.reset {
             background-color: #fff0f0;
         }
 
-        #history li.url{
+        #history li.url {
             background-color: #deeefe;
             color: #3639ff;
         }
 
-        #history li::before{
+        #history li span.info {
+            display: inline-block;
+            background: #861b7e;
+            color: #fff;
+            font-size: 85%;
+            padding: 0.15rem 0.25rem;
+            border-radius: 0.15rem;
+            margin-right: 0.2rem;
+        }
+
+        #history li span.info::before {
+            font-family: "fontello";
+            font-style: normal;
+            font-weight: normal;
+            speak: none;
+            display: inline-block;
+            text-decoration: inherit;
+            width: 1em;
+            text-align: center;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1em;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        #history li span.hidden::before {
+            content: '\e803';
+        }
+
+        #history li span.reset::before {
+            content: '\e800';
+        }
+
+        #history li span.frame::before {
+            content: '\e808';
+        }
+
+        #history li span.hidden {
+            background: #454545;
+        }
+
+        #history li span.reset {
+            background: #8a0000;
+        }
+
+        #history li span.frame {
+            background: #225c9a;
+        }
+
+        #history li::before {
             counter-increment: nerde;
             content: counter(nerde);
             color: #3f82ee;
@@ -199,10 +304,10 @@
     </div>
     <div class="group">
         <button id="highlightButton" class="toolbarButton highlight" aria-label="Turn On Focus Indicator">Show Indicator</button>
-        <input id="colorPicker" type="color" value="#FF0000" title="Indicator Color" aria-label="Indicator Color" >
+        <input id="colorPicker" type="color" value="#FF0000" title="Indicator Color" aria-label="Indicator Color" disabled>
     </div>
     <div class="group">
-        <button id="animationButton" class="toolbarButton animation on" aria-label="Turn Off Animation">Animate Indicator</button>
+        <button id="animationButton" class="toolbarButton animation on" aria-label="Turn Off Animation" disabled>Animate Indicator</button>
     </div>
 </div>
 <ol id="history">

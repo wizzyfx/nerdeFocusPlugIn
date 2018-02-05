@@ -49,12 +49,9 @@ var NerdeFocus = (function () {
 
     var isVisuallyHidden = function (node) {
         while (node.length) {
-            var realNode = node[0];
-            /*
-            if (($(realNode).outerHeight() <= 8 || $(realNode).outerWidth() <= 8) && ($(realNode).css('overflow') == 'hidden' || $(realNode).css('overflow-x') == 'hidden' || $(realNode).css('overflow-y') == 'hidden')) {
+            if ((node.outerHeight() <= 8 || node.outerWidth() <= 8) && (node.css('overflow') == 'hidden' || node.css('overflow-x') == 'hidden' || node.css('overflow-y') == 'hidden')) {
                 return true;
             }
-            */
             node = node.parent();
         }
         return false;
