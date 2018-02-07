@@ -21,17 +21,35 @@ var NerdeFocus = (function () {
     // https://github.com/yamadapc/jquery-getpath
     var getPath = function (node) {
         var path, allSiblings;
+
+        //Inspired from https://github.com/dequelabs/axe-core/blob/develop/lib/core/utils/get-selector.js
+        var commonNames = ['selected', 'active', 'focus', 'hover', 'enable', 'hidden', 'visible', 'valid', 'disable', 'col-'];
+
         while (node.length) {
             var realNode = node[0], name = realNode.localName;
             if (!name) {
                 break;
             }
             name = name.toLowerCase();
-            if (realNode.id && document.querySelectorAll('[id=' + realNode.id + ']').length === 1) {
+            if (realNode.id && /^[A-Za-z][\da-zA-Z_:.-]/.test(realNode.id) && document.querySelectorAll('[id=' + realNode.id + ']').length === 1) {
                 name = '#' + realNode.id;
                 path = name + (path ? '>' + path : '');
                 break;
             }
+
+            var className='';
+            var classList = realNode.className.split(/\s+/);
+            for (var i = 0; i < classList.length; i++) {
+                if (/^[\da-zA-Z_-]/.test(classList[i]) && commonNames.findIndex(function(str){return classList[i].indexOf(str)!==-1})===-1 && document.querySelectorAll('.' + classList[i]).length === 1) {
+                    className = '.' + classList[i];
+                    break;
+                }
+            }
+            if (className!='') {
+                path = className + (path ? '>' + path : '');
+                break;
+            }
+
             var parent = node.parent();
             var sameTagSiblings = parent.children(name);
             if (sameTagSiblings.length > 1) {
@@ -48,11 +66,15 @@ var NerdeFocus = (function () {
     };
 
     var isVisuallyHidden = function (node) {
-        while (node.length) {
-            if ((node.outerHeight() <= 8 || node.outerWidth() <= 8) && (node.css('overflow') == 'hidden' || node.css('overflow-x') == 'hidden' || node.css('overflow-y') == 'hidden')) {
-                return true;
+        try {
+            while (node.length) {
+                if ((node.outerHeight() <= 8 || node.outerWidth() <= 8) && (node.css('overflow') == 'hidden' || node.css('overflow-x') == 'hidden' || node.css('overflow-y') == 'hidden')) {
+                    return true;
+                }
+                node = node.parent();
             }
-            node = node.parent();
+        } catch (e) {
+            return false;
         }
         return false;
     };
@@ -77,7 +99,7 @@ var NerdeFocus = (function () {
 
     var updateHighlight = function () {
         if (activeElem.prop("tagName") === "BODY" && !inFrame) {
-            $('#nerdeFocusOverlay').css('left','4px').css('top','4px').css('width', $(window).width()-8 + 'px').css('height', $(window).height()-8 + 'px');
+            $('#nerdeFocusOverlay').css('left', '4px').css('top', '4px').css('width', $(window).width() - 8 + 'px').css('height', $(window).height() - 8 + 'px');
         } else {
             var elementTop = activeElem[0].getBoundingClientRect().top;
             var elementLeft = activeElem[0].getBoundingClientRect().left;
@@ -172,7 +194,9 @@ var NerdeFocus = (function () {
                     document.addEventListener("focus", updateFocus, true);
                     document.addEventListener("focusout", checkReset, true);
                     document.addEventListener("scroll", updateHighlight, true);
-                    setTimeout(function () {updateFocus();},200);
+                    setTimeout(function () {
+                        updateFocus();
+                    }, 200);
                     listeningFocus = true;
                 }
             }
