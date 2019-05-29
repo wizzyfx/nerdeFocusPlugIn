@@ -48,6 +48,11 @@
             text-align: left;
         }
 
+        .dark .toolbarButton {
+            color: #dedede;
+            background-color: #242424;
+        }
+
         .toolbarButton::before {
             font-family: "fontello";
             font-style: normal;
@@ -168,6 +173,10 @@
             color: #454545;
         }
 
+        .dark .toolbarButton:hover, .dark .toolbarButton:focus {
+            color: #e6e6e6;
+        }
+
         .toolbarButton:last-of-type {
             margin: 0;
         }
@@ -208,6 +217,11 @@
             font-size: 11px;
         }
 
+        .dark #history li {
+            border-bottom: 1px solid #4b4b4b;
+            color: rgb(222, 222, 222);
+        }
+
         #history li span.tag {
             display: inline-block;
             background: #861b7e;
@@ -222,13 +236,26 @@
             background-color: #fffde8;
         }
 
+        .dark #history li:last-of-type {
+            background-color: #373737;
+        }
+
         #history li.reset {
             background-color: #fff0f0;
         }
 
+        .dark #history li.reset {
+            background-color: #4f4848;
+        }
+
         #history li.url {
             background-color: #deeefe;
-            color: #3639ff;
+            color: #deeefe;
+        }
+
+        .dark #history li.url {
+            background-color: #36393f;
+            color: #bbcdff;
         }
 
         #history li span.info {

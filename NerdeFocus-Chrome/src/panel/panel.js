@@ -101,3 +101,4 @@ $('#colorPicker').change(function () {
     sendObjectToInspectedPage({action: "command", content: "updateColor", rgb: hexToRgb($(this).val())});
 });
 
+$('body').addClass(chrome.devtools.panels.themeName)
