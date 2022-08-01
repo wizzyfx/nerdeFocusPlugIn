@@ -15,6 +15,11 @@
     "noEmit": false,
     "jsx": "react"
   },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  },
   "include": ["src"],
   "exclude": ["build", "node_modules"]
 }

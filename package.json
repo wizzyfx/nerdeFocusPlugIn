@@ -2,7 +2,11 @@
   "name": "nerdefocus-chrome",
   "version": "0.4.0",
   "description": "Quickly debug focus when testing for accessibility",
-  "scripts": {},
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "dev": "webpack --config webpack.dev.js",
+    "watch": "webpack -w --config webpack.dev.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wizzyfx/nerdeFocusPlugIn.git"

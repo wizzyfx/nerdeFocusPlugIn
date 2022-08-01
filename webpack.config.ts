@@ -1,8 +1,16 @@
 import path from "path";
-import { Configuration } from "webpack";
+import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
+import type { Configuration } from "webpack";
+
+const devServer: DevServerConfiguration = {
+  static: path.join(__dirname, "build"),
+  compress: true,
+  port: 4000,
+};
 
 const config: Configuration = {
-  entry: "./src/index.tsx",
+  entry: { inject: "./src/content/inject.ts" },
+  mode: "development",
   module: {
     rules: [
       {
@@ -26,13 +34,9 @@ const config: Configuration = {
   },
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "bundle.js",
+    filename: "[name].js",
   },
-  devServer: {
-    static: path.join(__dirname, "build"),
-    compress: true,
-    port: 4000,
-  },
+  devServer,
 };
 
 export default config;
