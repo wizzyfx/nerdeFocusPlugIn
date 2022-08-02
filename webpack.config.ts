@@ -9,7 +9,7 @@ const devServer: DevServerConfiguration = {
 };
 
 const config: Configuration = {
-  entry: { inject: "./src/content/inject.ts" },
+  entry: { inject: "./src/content/index.ts" },
   mode: "development",
   module: {
     rules: [

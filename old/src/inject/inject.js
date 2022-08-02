@@ -23,13 +23,13 @@ var NerdeFocus = (function () {
         var path, allSiblings;
 
         //Inspired from https://github.com/dequelabs/axe-core/blob/develop/lib/core/utils/get-selector.js
-        var commonNames = ['selected', 'active', 'focus', 'hover', 'enable', 'hidden', 'visible', 'valid', 'disable', 'col-'];
+        // var commonNames = ['selected', 'active', 'focus', 'hover', 'enable', 'hidden', 'visible', 'valid', 'disable', 'col-'];
 
         while (node.length) {
-            var realNode = node[0], name = realNode.localName;
-            if (!name) {
-                break;
-            }
+            // var realNode = node[0], name = realNode.localName;
+            // if (!name) {
+            //     break;
+            // }
             name = name.toLowerCase();
             if (realNode.id && /^[A-Za-z][\da-zA-Z_:.-]/.test(realNode.id) && document.querySelectorAll('[id=' + realNode.id + ']').length === 1) {
                 name = '#' + realNode.id;

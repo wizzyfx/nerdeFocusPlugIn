@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "description": "Quickly debug focus when testing for accessibility",
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
+    "build": "webpack --config webpack.config.ts",
     "dev": "webpack --config webpack.dev.js",
     "watch": "webpack -w --config webpack.dev.js"
   },
