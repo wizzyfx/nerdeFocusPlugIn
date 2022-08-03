@@ -17,6 +17,11 @@ class NerdeFocusCS {
     this.inFrame = false;
   }
 
+  /**
+   * Calculates a simple CSS path for a given element in DOM
+   * Based on https://github.com/yamadapc/jquery-getpath
+   * Based on https://github.com/dequelabs/axe-core/blob/develop/lib/core/utils/get-selector.js
+   */
   getPath(node: Element) {
     const commonNames = [
       "selected",
@@ -30,7 +35,7 @@ class NerdeFocusCS {
       "disable",
       "col-",
     ];
-    let path = "";
+    const path: Array<string> = [];
     let currentNode: Element | null = node;
 
     while (currentNode) {
@@ -41,14 +46,15 @@ class NerdeFocusCS {
         break;
       }
 
+      let nodeName = nodeTag;
+
       // Check to if we can use a unique id for selector
       if (
         currentNode.id &&
         /^[A-Za-z][\da-zA-Z_:.-]/.test(currentNode.id) &&
         document.querySelectorAll(`[id=${currentNode.id}]`).length === 1
       ) {
-        path = `#${currentNode.id}${path ? ">" + path : ""}`;
-        break;
+        nodeName = `#${currentNode.id}`;
       }
 
       // Check to if we can use a unique class name for selector
@@ -58,11 +64,17 @@ class NerdeFocusCS {
           !commonNames.includes(className) &&
           document.querySelectorAll(`.${className}`).length === 1
         ) {
-          path = `.${className}${path ? ">" + path : ""}`;
+          nodeName = `${nodeName}.${className}`;
           return false;
         }
         return true;
       });
+
+      // If we have a unique result, just return it
+      if (nodeName !== nodeTag) {
+        path.push(nodeName);
+        break;
+      }
 
       // Try using a nth child selector
       const siblingNodes = Array.from(
@@ -72,25 +84,33 @@ class NerdeFocusCS {
       if (siblingNodes.length > 1) {
         const nodeIndex = siblingNodes.indexOf(currentNode);
         if (nodeIndex > 1) {
-
+          nodeName = `${nodeName}:nth-child(${nodeIndex + 1})`;
         }
       }
-      // var parent = node.parent();
-      // var sameTagSiblings = parent.children(name);
-      // if (sameTagSiblings.length > 1) {
-      //   allSiblings = parent.children();
-      //   var index = allSiblings.index(realNode) + 1;
-      //   if (index > 1) {
-      //     name += ':nth-child(' + index + ')';
-      //   }
-      // }
-      // path = name + (path ? '>' + path : '');
 
+      path.push(nodeName);
       currentNode = nodeParent;
     }
 
     return path;
   }
+
+  isVisuallyHidden(node: Element) {
+
+  }
 }
 
+//    var isVisuallyHidden = function (node) {
+//         try {
+//             while (node.length) {
+//                 if ((node.outerHeight() <= 8 || node.outerWidth() <= 8) && (node.css('overflow') == 'hidden' || node.css('overflow-x') == 'hidden' || node.css('overflow-y') == 'hidden')) {
+//                     return true;
+//                 }
+//                 node = node.parent();
+//             }
+//         } catch (e) {
+//             return false;
+//         }
+//         return false;
+//     };
 export default NerdeFocusCS;
