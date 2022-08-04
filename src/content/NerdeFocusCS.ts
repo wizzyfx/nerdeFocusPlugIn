@@ -22,7 +22,7 @@ class NerdeFocusCS {
    * Based on https://github.com/yamadapc/jquery-getpath
    * Based on https://github.com/dequelabs/axe-core/blob/develop/lib/core/utils/get-selector.js
    */
-  getPath(node: Element) {
+  getPath(node: HTMLElement | null): string {
     const commonNames = [
       "selected",
       "active",
@@ -52,12 +52,12 @@ class NerdeFocusCS {
       if (
         currentNode.id &&
         /^[A-Za-z][\da-zA-Z_:.-]/.test(currentNode.id) &&
-        document.querySelectorAll(`[id=${currentNode.id}]`).length === 1
+        document.querySelectorAll(`#${currentNode.id}`).length === 1
       ) {
         nodeName = `#${currentNode.id}`;
       }
 
-      // Check to if we can use a unique class name for selector
+      // Check if we can use a unique class name for selector
       Array.from(currentNode.classList).every((className) => {
         if (
           /^[\da-zA-Z_-]/.test(className) &&
@@ -70,13 +70,13 @@ class NerdeFocusCS {
         return true;
       });
 
-      // If we have a unique result, just return it
+      // If we have a unique result, return it
       if (nodeName !== nodeTag) {
         path.push(nodeName);
         break;
       }
 
-      // Try using a nth child selector
+      // Try using a nth child selector if no unique matches are found
       const siblingNodes = Array.from(
         nodeParent.querySelectorAll(nodeTag).values()
       );
@@ -92,25 +92,32 @@ class NerdeFocusCS {
       currentNode = nodeParent;
     }
 
-    return path;
+    return path.reverse().join(">");
   }
 
-  isVisuallyHidden(node: Element) {
+  isVisuallyHidden(node: HTMLElement | null): boolean {
+    let currentNode: HTMLElement | null = node;
 
+    while (currentNode) {
+      const nodeParent: HTMLElement | null = currentNode.parentElement;
+      if (!nodeParent) {
+        break;
+      }
+
+      const nodeStyle = window.getComputedStyle(currentNode);
+
+      if (
+        (currentNode.offsetHeight <= 8 || currentNode.offsetWidth <= 8) &&
+        (nodeStyle.overflow === "hidden" ||
+          nodeStyle.overflowX === "hidden" ||
+          nodeStyle.overflowY === "hidden" ||
+          nodeStyle.clip === "rect(0px, 0px, 0px, 0px)")
+      ) {
+        return true;
+      }
+      currentNode = nodeParent;
+    }
+    return false;
   }
 }
-
-//    var isVisuallyHidden = function (node) {
-//         try {
-//             while (node.length) {
-//                 if ((node.outerHeight() <= 8 || node.outerWidth() <= 8) && (node.css('overflow') == 'hidden' || node.css('overflow-x') == 'hidden' || node.css('overflow-y') == 'hidden')) {
-//                     return true;
-//                 }
-//                 node = node.parent();
-//             }
-//         } catch (e) {
-//             return false;
-//         }
-//         return false;
-//     };
 export default NerdeFocusCS;
