@@ -1,20 +1,20 @@
 class NerdeFocusCS {
-  private captureFocus: boolean;
-  private showHighlight: boolean;
+  private activeElement: Element | null;
   private animateHighlight: boolean;
+  private captureFocus: boolean;
   private highlightColor: number[];
-  private listeningFocus: boolean;
-  private activeElem: string;
   private inFrame: boolean;
+  private listeningFocus: boolean;
+  private showHighlight: boolean;
 
   constructor() {
-    this.captureFocus = false;
-    this.showHighlight = false;
+    this.activeElement = null;
     this.animateHighlight = true;
+    this.captureFocus = false;
     this.highlightColor = [255, 0, 0];
-    this.listeningFocus = false;
-    this.activeElem = "";
     this.inFrame = false;
+    this.listeningFocus = false;
+    this.showHighlight = false;
   }
 
   /**
@@ -118,6 +118,61 @@ class NerdeFocusCS {
       currentNode = nodeParent;
     }
     return false;
+  }
+
+  updateHighlightIndicator(): void {
+    if (!this.showHighlight || !this.activeElement) {
+      return;
+    }
+
+    const elementBox: {
+      height: number;
+      width: number;
+      x: number;
+      y: number;
+      bottom: number;
+      left: number;
+      right: number;
+      top: number;
+    } = {
+      ...this.activeElement.getBoundingClientRect(),
+    };
+
+    if (elementBox.width < 8) {
+      elementBox.width = 8;
+    }
+
+    if (elementBox.height < 8) {
+      elementBox.height = 8;
+    }
+
+    const indicator: HTMLElement | null = document.querySelector(
+      "#nerdeFocusIndicator"
+    );
+
+    if (indicator) {
+      Object.assign(indicator.style, elementBox);
+    }
+  }
+
+  updateFocus(): void {
+    if (!this.captureFocus) {
+      return;
+    }
+
+    this.activeElement = document.activeElement;
+    chrome.runtime.sendMessage(
+      {
+        action: "updateFocus",
+        itemPath: "",
+        itemTag: "",
+        isVisuallyHidden: "",
+        isInFrame: "",
+      },
+      () => {
+        return null;
+      }
+    );
   }
 }
 export default NerdeFocusCS;
