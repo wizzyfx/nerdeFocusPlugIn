@@ -2,7 +2,7 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import path from "path";
 import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
 import type { Configuration } from "webpack";
-import { version } from "./package.json";
+import { version, author, description, homepage } from "./package.json";
 
 const devServer: DevServerConfiguration = {
   static: path.join(__dirname, "build"),
@@ -22,6 +22,9 @@ const createManifest = new CopyWebpackPlugin({
           JSON.stringify({
             ...JSON.parse(content.toString()),
             version: version,
+            author: author,
+            description: description,
+            homepage_url: homepage,
           })
         );
       },
