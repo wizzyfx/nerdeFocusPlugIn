@@ -3,9 +3,9 @@
   "version": "0.4.0",
   "description": "Quickly debug focus when testing for accessibility",
   "scripts": {
-    "build": "webpack --config webpack.config.ts",
-    "dev": "webpack --config webpack.dev.js",
-    "watch": "webpack -w --config webpack.dev.js",
+    "build": "npm version minor && webpack --config webpack.config.ts --mode=production",
+    "dev": "webpack --config webpack.config.ts --mode=development",
+    "watch": "webpack watch --config webpack.config.ts --mode=development",
     "test": "jest"
   },
   "repository": {

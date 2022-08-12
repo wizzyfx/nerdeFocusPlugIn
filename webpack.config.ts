@@ -8,6 +8,7 @@ const devServer: DevServerConfiguration = {
   static: path.join(__dirname, "build"),
   compress: true,
   port: 4000,
+  liveReload: true,
 };
 
 const createManifest = new CopyWebpackPlugin({
@@ -57,7 +58,7 @@ const config: Configuration = {
     filename: "[name].js",
   },
   plugins: [createManifest],
-  devServer,
+  devServer: devServer,
 };
 
 export default config;
