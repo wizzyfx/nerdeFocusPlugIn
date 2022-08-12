@@ -3,7 +3,7 @@
   "version": "0.5.0",
   "description": "Quickly debug focus when testing for accessibility",
   "scripts": {
-    "build": "npm version minor && webpack --config webpack.config.ts --mode=production",
+    "build": "npm version patch && webpack --config webpack.config.ts --mode=production && zip -r nerdefocus.zip build",
     "dev": "webpack --config webpack.config.ts --mode=development",
     "watch": "webpack watch --config webpack.config.ts --mode=development",
     "test": "jest"
