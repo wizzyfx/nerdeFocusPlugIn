@@ -138,13 +138,8 @@ class NerdeFocusCS {
       ...this.activeElement.getBoundingClientRect(),
     };
 
-    if (elementBox.width < 8) {
-      elementBox.width = 8;
-    }
-
-    if (elementBox.height < 8) {
-      elementBox.height = 8;
-    }
+    elementBox.width = Math.max(elementBox.width, 8);
+    elementBox.height = Math.max(elementBox.height, 8);
 
     const indicator: HTMLElement | null = document.querySelector(
       "#nerdeFocusIndicator"

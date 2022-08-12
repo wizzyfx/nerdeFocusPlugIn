@@ -1,4 +1,5 @@
 import CopyWebpackPlugin from "copy-webpack-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 import path from "path";
 import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
 import type { Configuration } from "webpack";
@@ -11,7 +12,15 @@ const devServer: DevServerConfiguration = {
   liveReload: true,
 };
 
-const createManifest = new CopyWebpackPlugin({
+const staticPages: HtmlWebpackPlugin[] = ["devtools", "panel"].map((page) => {
+  return new HtmlWebpackPlugin({
+    filename: `${page}.html`,
+    template: path.join(__dirname, "src", page, "index.html"),
+    cache: false,
+  });
+});
+
+const createManifest: CopyWebpackPlugin = new CopyWebpackPlugin({
   patterns: [
     {
       from: path.join(__dirname, "src", "manifest", "manifest.json"),
@@ -33,7 +42,11 @@ const createManifest = new CopyWebpackPlugin({
 });
 
 const config: Configuration = {
-  entry: { inject: "./src/content/index.ts" },
+  entry: {
+    inject: path.join(__dirname, "src", "content", "index.ts"),
+    panel: path.join(__dirname, "src", "panel", "index.tsx"),
+    devtools: path.join(__dirname, "src", "devtools", "index.ts"),
+  },
   mode: "development",
   module: {
     rules: [
@@ -60,7 +73,7 @@ const config: Configuration = {
     path: path.resolve(__dirname, "build"),
     filename: "[name].js",
   },
-  plugins: [createManifest],
+  plugins: [createManifest, ...staticPages],
   devServer: devServer,
 };
 

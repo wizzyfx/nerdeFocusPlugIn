@@ -14,7 +14,7 @@
     "128": "assets/icon128.png"
   },
 
-  "devtools_page": "src/devtools/devtools.html",
+  "devtools_page": "devtools.html",
 
   "host_permissions": ["http://*/*", "https://*/*"],
 
@@ -22,7 +22,7 @@
     {
       "matches": ["http://*/*", "https://*/*"],
       "match_origin_as_fallback": true,
-      "js": ["vendor/jquery-3.2.1.slim.min.js", "src/inject/inject.js"]
+      "js": ["inject.js"]
     }
   ]
 }
