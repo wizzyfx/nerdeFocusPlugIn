@@ -1,6 +1,6 @@
 {
   "name": "nerdefocus-chrome",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Quickly debug focus when testing for accessibility",
   "scripts": {
     "build": "npm version minor && webpack --config webpack.config.ts --mode=production",
