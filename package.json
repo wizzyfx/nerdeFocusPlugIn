@@ -1,9 +1,9 @@
 {
   "name": "nerdefocus-chrome",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Quickly debug focus when testing for accessibility",
   "scripts": {
-    "build": "npm version patch && webpack --config webpack.config.ts --mode=production && zip -r nerdefocus.zip build",
+    "build": "npm version patch && webpack --config webpack.config.ts --mode=production && zip -r -X nerdefocus.zip ./build/*",
     "dev": "webpack --config webpack.config.ts --mode=development",
     "watch": "webpack watch --config webpack.config.ts --mode=development",
     "test": "jest"
