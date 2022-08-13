@@ -17,6 +17,7 @@ const staticPages: HtmlWebpackPlugin[] = ["devtools", "panel"].map((page) => {
     filename: `${page}.html`,
     template: path.join(__dirname, "src", page, "index.html"),
     cache: false,
+    chunks: [page],
   });
 });
 
@@ -63,6 +64,14 @@ const config: Configuration = {
             ],
           },
         },
+      },
+      {
+        test: /\.(png)$/i,
+        type: "asset/resource",
+      },
+      {
+        test: /\.(woff2)$/i,
+        type: "asset/resource",
       },
     ],
   },
