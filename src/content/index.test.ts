@@ -13,5 +13,4 @@ describe("s", () => {
     const node = document.querySelector("button");
     expect(nerdeFocus.getPath(node)).toEqual("#baa a");
   });
-
 });

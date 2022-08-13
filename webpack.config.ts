@@ -42,6 +42,16 @@ const createManifest: CopyWebpackPlugin = new CopyWebpackPlugin({
   ],
 });
 
+const createIcons: CopyWebpackPlugin = new CopyWebpackPlugin({
+  patterns: [
+    {
+      from: path.join(__dirname, "src", "assets"),
+      to: path.join(__dirname, "build"),
+      force: true,
+    },
+  ],
+});
+
 const config: Configuration = {
   entry: {
     inject: path.join(__dirname, "src", "content", "index.ts"),
@@ -49,6 +59,7 @@ const config: Configuration = {
     devtools: path.join(__dirname, "src", "devtools", "index.ts"),
   },
   mode: "development",
+  devtool: "source-map",
   module: {
     rules: [
       {
@@ -82,7 +93,7 @@ const config: Configuration = {
     path: path.resolve(__dirname, "build"),
     filename: "[name].js",
   },
-  plugins: [createManifest, ...staticPages],
+  plugins: [createManifest, createIcons, ...staticPages],
   devServer: devServer,
 };
 
