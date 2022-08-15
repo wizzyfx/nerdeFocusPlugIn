@@ -77,6 +77,10 @@ const config: Configuration = {
         },
       },
       {
+        test: /\.less$/i,
+        use: ["style-loader", "css-loader", "less-loader"],
+      },
+      {
         test: /\.(png)$/i,
         type: "asset/resource",
       },
@@ -92,6 +96,7 @@ const config: Configuration = {
   output: {
     path: path.resolve(__dirname, "build"),
     filename: "[name].js",
+    clean: true,
   },
   plugins: [createManifest, createIcons, ...staticPages],
   devServer: devServer,
