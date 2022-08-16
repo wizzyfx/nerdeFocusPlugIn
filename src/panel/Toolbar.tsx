@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { useFocus, FocusScope, useFocusManager } from "react-aria";
-import ThemeContext from "./context/ThemeContext";
 import "./index.less";
 
 function ToolbarButton(props: any) {
@@ -44,14 +43,8 @@ function ToolbarButton(props: any) {
 }
 
 const Toolbar: React.FC = () => {
-  const appTheme = useContext(ThemeContext);
-
   return (
-    <div
-      className={`${appTheme} toolbar`}
-      role="toolbar"
-      aria-label="NerdeFocus Controls"
-    >
+    <div className={`toolbar`} role="toolbar" aria-label="NerdeFocus Controls">
       <FocusScope>
         <ToolbarButton tabIndex={0} />
         <ToolbarButton />
