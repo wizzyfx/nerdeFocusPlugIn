@@ -1,2 +1,12 @@
-@import "/node_modules/sanitize.css/sanitize.css";
-@link-color: #428bca;
+@import (inline) "/node_modules/sanitize.css/sanitize.css";
+@link-color: #7fca42;
+
+body {
+  background-color: #428bca;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #7fca42;
+  }
+}
