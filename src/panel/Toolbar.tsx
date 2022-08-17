@@ -1,44 +1,55 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useFocus, FocusScope, useFocusManager } from "react-aria";
 import "./index.less";
+
+function ToolbarButton(props: any) {
+  const [focusable, setFocusable] = React.useState(
+    props.tabIndex === 0 ? true : false
+  );
+  const focusManager = useFocusManager();
+
+  const { focusProps } = useFocus({
+    onFocus: (e) => setFocusable(true),
+    onBlur: (e) => setFocusable(false),
+  });
+
+  const onKeyDown = (e: { key: any }) => {
+    switch (e.key) {
+      case "ArrowRight":
+        focusManager.focusNext({ wrap: true, tabbable: false }).tabIndex = 0;
+        break;
+      case "ArrowLeft":
+        focusManager.focusPrevious({ wrap: true, tabbable: false });
+        break;
+      case "Home":
+        focusManager.focusFirst({ wrap: true, tabbable: false });
+        break;
+      case "End":
+        focusManager.focusLast({ wrap: true, tabbable: false });
+        break;
+    }
+  };
+
+  return (
+    <button
+      tabIndex={focusable ? 0 : -1}
+      onKeyDown={onKeyDown}
+      {...props}
+      {...focusProps}
+    >
+      1
+    </button>
+  );
+}
 
 const Toolbar: React.FC = () => {
   return (
-    <div className="toolbar">
-      <div className="group">
-        <button id="captureButton" className="toolbarButton record">
-          Record
-        </button>
-        <button id="clearButton" className="toolbarButton clear">
-          Clear
-        </button>
-      </div>
-      <div className="group">
-        <button
-          id="highlightButton"
-          className="toolbarButton highlight"
-          aria-label="Turn On Focus Indicator"
-        >
-          Show Indicator
-        </button>
-        <input
-          id="colorPicker"
-          type="color"
-          value="#FF0000"
-          title="Indicator Color"
-          aria-label="Indicator Color"
-          disabled
-        />
-      </div>
-      <div className="group">
-        <button
-          id="animationButton"
-          className="toolbarButton animation on"
-          aria-label="Turn Off Animation"
-          disabled
-        >
-          Animate Indicator
-        </button>
-      </div>
+    <div className={`toolbar`} role="toolbar" aria-label="NerdeFocus Controls">
+      <FocusScope>
+        <ToolbarButton tabIndex={0} />
+        <ToolbarButton />
+        <ToolbarButton />
+      </FocusScope>
     </div>
   );
 };

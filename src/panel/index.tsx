@@ -3,11 +3,13 @@ import { render } from "react-dom";
 import "./index.less";
 import Toolbar from "./Toolbar";
 
+const appTheme = chrome.devtools.panels.themeName === "dark" ? "dark" : "light";
+
 const App: React.FC = () => {
   return (
-    <div>
+    <main className={appTheme}>
       <Toolbar />
-    </div>
+    </main>
   );
 };
 
