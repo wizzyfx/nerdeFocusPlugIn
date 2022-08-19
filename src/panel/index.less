@@ -1,12 +1,23 @@
 @import (inline) "/node_modules/sanitize.css/sanitize.css";
-@link-color: #7fca42;
 
-body {
-  background-color: #428bca;
+@primary-text-color: #191919;
+@primary-background-color: #fff;
+@primary-accent-color: #861b7e;
+@secondary-accent-color: #3f82ee;
+@error-color: #8a0000;
+@info-color: #5a6a94;
+@current-color: #fffde8;
+
+.light {
+  --primary-color: @primary-text-color;
+  --toolbar-background-color: @primary-background-color;
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #7fca42;
-  }
+.dark {
+  --primary-color: @primary-background-color;
+  --toolbar-background-color: @primary-background-color;
+}
+
+body {
+  background-color: var(--primary-color);
 }

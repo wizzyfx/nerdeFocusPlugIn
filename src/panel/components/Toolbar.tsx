@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useFocus, FocusScope, useFocusManager } from "react-aria";
-import "./index.less";
+import "../index.less";
 
 function ToolbarButton(props: any) {
   const [focusable, setFocusable] = React.useState(
