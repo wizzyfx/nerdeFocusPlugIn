@@ -7,9 +7,9 @@ const appTheme = chrome.devtools.panels.themeName === "dark" ? "dark" : "light";
 
 const App: React.FC = () => {
   return (
-    <main className={appTheme}>
+    <div id="wrapper" className={appTheme}>
       <Toolbar />
-    </main>
+    </div>
   );
 };
 

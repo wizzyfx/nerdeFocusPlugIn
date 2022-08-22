@@ -6,7 +6,7 @@ import ToolbarButton from "./ToolbarButton";
 
 const Toolbar: React.FC = () => {
   return (
-    <div className={`toolbar`} role="toolbar" aria-label="NerdeFocus Controls">
+    <div className={`toolbar`} role="toolbar" aria-label="NerdeFocus Controls" id="toolbar">
       <FocusScope>
         <ToolbarButton />
         <ToolbarButton />

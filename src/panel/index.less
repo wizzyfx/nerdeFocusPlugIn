@@ -1,27 +1,33 @@
 @import (inline) "/node_modules/sanitize.css/sanitize.css";
 
-@primary-text-color: #191919;
-@primary-background-color: #fff;
-@primary-accent-color: #861b7e;
-@secondary-accent-color: #3f82ee;
-@error-color: #8a0000;
-@info-color: #5a6a94;
-@current-color: #fffde8;
-
-.light {
-  --primary-color: @primary-text-color;
-  --toolbar-background-color: @primary-background-color;
+@font-face {
+  font-family: "Fontello";
+  src: url("../assets/fontello.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 
-.dark {
-  --primary-color: @primary-background-color;
-  --toolbar-background-color: @primary-background-color;
+body,
+html,
+#nerdeFocus {
+  height: 100%;
+  font-size: 12px;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-body {
-  background-color: var(--primary-color);
-}
+#wrapper {
+  &.light {
+    --primary-color: #191919;
+    --border-color: #CBCDD1;
+    --background-color: #FFF;
+    --toolbar-background-color: #F1F3F4;
+  }
 
-button{
-  font-size: 11px;
+  &.dark {
+    --primary-color: #fff;
+    --background-color: #191919;
+  }
+
+  background-color: var(--background-color);
+  height: 100%;
 }
