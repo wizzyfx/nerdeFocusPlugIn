@@ -1,10 +1,34 @@
-button {
+button.toolbarButton {
   border: none;
   background-color: transparent;
   border-radius: 0.5rem;
   padding: 0.25rem 0.5rem;
   margin: 0 0.25rem;
+  font-weight: normal;
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 1rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--toolbar-hover-color);
+  }
+  &.icon:before {
+    font-size: 1.15rem;
+    font-family: Fontello;
+    margin-right: 0.25rem;
+  }
+  &.record:before {
+    position: relative;
+    top: -0.125rem;
+    content: "\e805";
+  }
+  &.trash:before {
+    position: relative;
+    top: -0.125rem;
+    content: "\e807";
+  }
+  &.check:before {
+    content: "\f096";
   }
 }

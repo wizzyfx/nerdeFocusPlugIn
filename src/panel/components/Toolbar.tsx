@@ -6,11 +6,18 @@ import ToolbarButton from "./ToolbarButton";
 
 const Toolbar: React.FC = () => {
   return (
-    <div className={`toolbar`} role="toolbar" aria-label="NerdeFocus Controls" id="toolbar">
+    <div
+      className={`toolbar`}
+      role="toolbar"
+      aria-label="NerdeFocus Controls"
+      id="toolbar"
+    >
       <FocusScope>
-        <ToolbarButton />
-        <ToolbarButton />
-        <ToolbarButton />
+        <ToolbarButton icon="record">Record</ToolbarButton>
+        <ToolbarButton icon="trash">Clear</ToolbarButton>
+        <ToolbarButton icon="check">Show Indicator</ToolbarButton>
+        <ToolbarButton icon="color">Pick Color</ToolbarButton>
+        <ToolbarButton icon="check">Animate Indicator</ToolbarButton>
       </FocusScope>
     </div>
   );

@@ -12,22 +12,24 @@ html,
 #nerdeFocus {
   height: 100%;
   font-size: 12px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "Helvetica Neue", sans-serif;
 }
 
 #wrapper {
   &.light {
-    --primary-color: #191919;
+    --primary-color: #383737;
     --border-color: #cbcdd1;
     --background-color: #fff;
     --toolbar-background-color: #f1f3f4;
+    --toolbar-hover-color: rgba(0, 0, 0, 0.1);
   }
 
   &.dark {
-    --primary-color: #bdc6cf;
+    --primary-color: #989ca4;
     --border-color: #494c50;
     --background-color: #202124;
     --toolbar-background-color: #292a2d;
+    --toolbar-hover-color: rgba(255, 255, 255, 0.1);
   }
 
   background-color: var(--background-color);
