@@ -22,7 +22,7 @@ const Toolbar: React.FC = () => {
         <ToolbarToggle onIcon="check" offIcon="record">
           Show Indicator
         </ToolbarToggle>
-        <ToolbarColorPicker>Pick Color</ToolbarColorPicker>
+        <ToolbarColorPicker>Indicator Color</ToolbarColorPicker>
         <ToolbarToggle onIcon="check" offIcon="record">
           Animate Indicator
         </ToolbarToggle>
