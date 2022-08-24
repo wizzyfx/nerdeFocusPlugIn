@@ -10,8 +10,16 @@ button.toolbarButton {
   color: var(--primary-color);
   display: flex;
   align-items: center;
+  opacity: 0.9;
   &:hover {
+    opacity: 1;
     background-color: var(--toolbar-hover-color);
+  }
+  &:active {
+    opacity: 0.9;
+  }
+  &:focus-visible {
+    outline: 0.2rem solid var(--primary-color);
   }
   &.icon:before {
     font-size: 1.15rem;
@@ -20,15 +28,42 @@ button.toolbarButton {
   }
   &.record:before {
     position: relative;
-    top: -0.125rem;
+    top: -0.01rem;
     content: "\e805";
   }
   &.trash:before {
     position: relative;
-    top: -0.125rem;
+    top: -0.02rem;
+    font-size: 1.25rem;
     content: "\e807";
   }
   &.check:before {
+    content: "\f14a";
+  }
+  &.uncheck:before {
     content: "\f096";
+  }
+}
+
+#colorPicker {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin:0;
+  &::-webkit-color-swatch {
+    border-color: transparent;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    margin:0;
+  }
+  &::-webkit-color-swatch-wrapper {
+    border-color: transparent;
+    border-radius: 50%;
+    padding: 0;
+    margin:0;
+    width: 22px;
+    height: 22px;
   }
 }

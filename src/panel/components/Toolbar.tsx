@@ -3,6 +3,8 @@ import { useFocus, FocusScope, useFocusManager } from "react-aria";
 import "../index.less";
 import "./Toolbar.less";
 import ToolbarButton from "./ToolbarButton";
+import ToolbarToggle from "./ToolbarToggle";
+import ToolbarColorPicker from "./ToolbarColorPicker";
 
 const Toolbar: React.FC = () => {
   return (
@@ -13,11 +15,11 @@ const Toolbar: React.FC = () => {
       id="toolbar"
     >
       <FocusScope>
-        <ToolbarButton icon="record">Record</ToolbarButton>
+        <ToolbarToggle onIcon="record">Record</ToolbarToggle>
         <ToolbarButton icon="trash">Clear</ToolbarButton>
-        <ToolbarButton icon="check">Show Indicator</ToolbarButton>
-        <ToolbarButton icon="color">Pick Color</ToolbarButton>
-        <ToolbarButton icon="check">Animate Indicator</ToolbarButton>
+        <ToolbarToggle onIcon="check">Show Indicator</ToolbarToggle>
+        <ToolbarColorPicker>Pick Color</ToolbarColorPicker>
+        <ToolbarToggle onIcon="check">Animate Indicator</ToolbarToggle>
       </FocusScope>
     </div>
   );
