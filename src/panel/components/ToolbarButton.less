@@ -1,8 +1,9 @@
-button.toolbarButton {
+button.toolbarButton,
+label.toolbarButton {
   border: none;
   background-color: transparent;
   border-radius: 0.5rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem;
   margin: 0 0.25rem;
   font-weight: normal;
   font-family: "Helvetica Neue", sans-serif;
@@ -11,6 +12,7 @@ button.toolbarButton {
   display: flex;
   align-items: center;
   opacity: 0.9;
+  line-height: 1rem;
   &:hover {
     opacity: 1;
     background-color: var(--toolbar-hover-color);
@@ -21,49 +23,53 @@ button.toolbarButton {
   &:focus-visible {
     outline: 0.2rem solid var(--primary-color);
   }
-  &.icon:before {
+  .icon:before {
     font-size: 1.15rem;
     font-family: Fontello;
     margin-right: 0.25rem;
+    text-shadow: 0 0 1px var(--background-color);
   }
-  &.record:before {
+  .record:before {
     position: relative;
     top: -0.01rem;
     content: "\e805";
   }
-  &.trash:before {
+  .trash:before {
     position: relative;
     top: -0.02rem;
     font-size: 1.25rem;
     content: "\e807";
   }
-  &.check:before {
+  .check:before {
     content: "\f14a";
   }
-  &.uncheck:before {
+  .uncheck:before {
     content: "\f096";
   }
 }
 
-#colorPicker {
-  width: 22px;
-  height: 22px;
-  padding: 0;
-  margin:0;
-  &::-webkit-color-swatch {
-    border-color: transparent;
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    padding: 0;
-    margin:0;
+label.toolbarButton {
+  &:has(input:focus-visible) {
+    outline: 0.2rem solid var(--primary-color);
   }
-  &::-webkit-color-swatch-wrapper {
-    border-color: transparent;
-    border-radius: 50%;
+  input.colorPicker {
+    width: 1rem;
+    height: 1rem;
     padding: 0;
-    margin:0;
-    width: 22px;
-    height: 22px;
+    margin-right: 0.25rem;
+    overflow: hidden;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 0 1px var(--background-color);
+    border-radius: 0.33rem;
+    &::-webkit-color-swatch {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    &::-webkit-color-swatch-wrapper {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
   }
 }

@@ -8,9 +8,14 @@ function ToolbarColorPicker(props: {
   onChange?: () => void;
 }) {
   return (
-    <label htmlFor="colorPicker">
-      <span>Color</span>
-      <input type="color" value="#ff0000" id="colorPicker" />
+    <label htmlFor="colorPicker" className="toolbarButton">
+      <input
+        type="color"
+        value="#ff0000"
+        id="colorPicker"
+        className="colorPicker"
+      />
+      <span>{props.children}</span>
     </label>
   );
 }

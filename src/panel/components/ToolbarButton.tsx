@@ -8,13 +8,13 @@ function ToolbarButton(props: {
   icon?: string;
   onClick?: () => void;
 }) {
-  const classNames = [
-    "toolbarButton",
-    ...(props.icon ? ["icon", props.icon] : []),
-  ].join(" ");
+  const shouldShowIcon = !!props.icon;
 
   return (
-    <button className={classNames}>
+    <button className="toolbarButton">
+      {shouldShowIcon && (
+        <span aria-hidden className={`icon ${props.icon}`}></span>
+      )}
       <span>{props.children}</span>
     </button>
   );

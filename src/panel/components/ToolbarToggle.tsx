@@ -9,13 +9,13 @@ function ToolbarToggle(props: {
   offIcon?: string;
   onClick?: () => void;
 }) {
-  const classNames = [
-    "toolbarButton",
-    ...(props.onIcon ? ["icon", props.onIcon] : []),
-  ].join(" ");
+  const shouldShowIcon = props.onIcon && props.offIcon;
 
   return (
-    <button className={classNames}>
+    <button className="toolbarButton">
+      {shouldShowIcon && (
+        <span aria-hidden className={`icon ${props.onIcon}`}></span>
+      )}
       <span>{props.children}</span>
     </button>
   );

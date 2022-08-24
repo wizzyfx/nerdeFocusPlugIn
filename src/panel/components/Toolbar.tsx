@@ -15,11 +15,17 @@ const Toolbar: React.FC = () => {
       id="toolbar"
     >
       <FocusScope>
-        <ToolbarToggle onIcon="record">Record</ToolbarToggle>
+        <ToolbarToggle onIcon="record" offIcon="record">
+          Record
+        </ToolbarToggle>
         <ToolbarButton icon="trash">Clear</ToolbarButton>
-        <ToolbarToggle onIcon="check">Show Indicator</ToolbarToggle>
+        <ToolbarToggle onIcon="check" offIcon="record">
+          Show Indicator
+        </ToolbarToggle>
         <ToolbarColorPicker>Pick Color</ToolbarColorPicker>
-        <ToolbarToggle onIcon="check">Animate Indicator</ToolbarToggle>
+        <ToolbarToggle onIcon="check" offIcon="record">
+          Animate Indicator
+        </ToolbarToggle>
       </FocusScope>
     </div>
   );
