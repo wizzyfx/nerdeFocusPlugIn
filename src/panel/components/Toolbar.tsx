@@ -6,6 +6,10 @@ import ToolbarButton from "./ToolbarButton";
 import ToolbarToggle from "./ToolbarToggle";
 import ToolbarColorPicker from "./ToolbarColorPicker";
 
+const Separator = () => {
+  return <div className="separator"></div>;
+};
+
 const Toolbar: React.FC = () => {
   return (
     <div
@@ -19,13 +23,15 @@ const Toolbar: React.FC = () => {
           Record
         </ToolbarToggle>
         <ToolbarButton icon="trash">Clear</ToolbarButton>
+        <Separator />
         <ToolbarToggle onIcon="check" offIcon="record">
           Show Indicator
         </ToolbarToggle>
-        <ToolbarColorPicker>Indicator Color</ToolbarColorPicker>
+        <Separator />
         <ToolbarToggle onIcon="check" offIcon="record">
           Animate Indicator
         </ToolbarToggle>
+        <ToolbarColorPicker>Indicator Color</ToolbarColorPicker>
       </FocusScope>
     </div>
   );
