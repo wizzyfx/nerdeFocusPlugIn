@@ -53,7 +53,7 @@ label.toolbarButton {
   &:has(input:focus-visible) {
     outline: 0.2rem solid var(--primary-color);
   }
-  input.colorPicker {
+  input[type="color"] {
     width: 1rem;
     height: 1rem;
     padding: 0;
@@ -71,6 +71,25 @@ label.toolbarButton {
       border: none;
       padding: 0;
       margin: 0;
+    }
+  }
+
+  input[type="checkbox"] {
+    appearance: none;
+    &:before {
+      display: block;
+      width: 1rem;
+      color: var(--primary-color);
+      font-size: 1.17rem;
+      font-family: Fontello;
+      margin-right: 0.25rem;
+      text-shadow: 0 0 1px var(--background-color);
+      content: "\f096";
+    }
+    &:checked {
+      &::before {
+        content: "\f14a";
+      }
     }
   }
 }

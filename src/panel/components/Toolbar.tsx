@@ -5,12 +5,17 @@ import "./Toolbar.less";
 import ToolbarButton from "./ToolbarButton";
 import ToolbarToggle from "./ToolbarToggle";
 import ToolbarColorPicker from "./ToolbarColorPicker";
+import { setColor, setAnimation, setVisibility } from "../store/indicatorSlice";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
 
 const Separator = () => {
   return <div className="separator"></div>;
 };
 
 const Toolbar: React.FC = () => {
+  const indicatorState = useAppSelector((state) => state.indicator);
+  const dispatch = useAppDispatch();
+
   return (
     <div
       className={`toolbar`}
@@ -19,19 +24,32 @@ const Toolbar: React.FC = () => {
       id="toolbar"
     >
       <FocusScope>
-        <ToolbarToggle onIcon="record" offIcon="record">
-          Record
-        </ToolbarToggle>
+        <ToolbarToggle>Record</ToolbarToggle>
         <ToolbarButton icon="trash">Clear</ToolbarButton>
         <Separator />
-        <ToolbarToggle onIcon="check" offIcon="record">
+        <ToolbarToggle
+          checked={indicatorState.visible}
+          onChange={(event) => {
+            dispatch(setVisibility(event.target.checked));
+          }}
+        >
           Show Indicator
         </ToolbarToggle>
         <Separator />
-        <ToolbarToggle onIcon="check" offIcon="record">
+        <ToolbarToggle
+          checked={indicatorState.animate}
+          onChange={(event) => {
+            dispatch(setAnimation(event.target.checked));
+          }}
+        >
           Animate Indicator
         </ToolbarToggle>
-        <ToolbarColorPicker>Indicator Color</ToolbarColorPicker>
+        <ToolbarColorPicker
+          value={indicatorState.color}
+          onChange={(event) => dispatch(setColor(event.target.value))}
+        >
+          Indicator Color
+        </ToolbarColorPicker>
       </FocusScope>
     </div>
   );

@@ -5,19 +5,19 @@ import "./ToolbarButton.less";
 function ToolbarToggle(props: {
   children?: React.ReactNode;
   disabled?: boolean;
-  onIcon?: string;
-  offIcon?: string;
-  onClick?: () => void;
+  checked?: boolean;
+  onChange?: () => void;
 }) {
-  const shouldShowIcon = props.onIcon && props.offIcon;
-
   return (
-    <button className="toolbarButton">
-      {shouldShowIcon && (
-        <span aria-hidden className={`icon ${props.onIcon}`}></span>
-      )}
+    <label className="toolbarButton">
+      <input
+        type="checkbox"
+        checked={props.checked}
+        disabled={props.disabled}
+        onChange={props.onChange}
+      />
       <span>{props.children}</span>
-    </button>
+    </label>
   );
 }
 
