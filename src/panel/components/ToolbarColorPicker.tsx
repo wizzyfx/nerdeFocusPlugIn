@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { setColor } from "../store/indicatorSlice";
 import "../index.less";
 import "./ToolbarButton.less";
 
@@ -7,13 +9,21 @@ function ToolbarColorPicker(props: {
   disabled?: boolean;
   onChange?: () => void;
 }) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setColor(e.target.value));
+  };
+
+  const dispatch = useAppDispatch();
+  const todos = useAppSelector((state) => state.indicator);
+
   return (
     <label htmlFor="colorPicker" className="toolbarButton">
       <input
         type="color"
-        value="#ff0000"
+        value={todos.color}
         id="colorPicker"
         className="colorPicker"
+        onChange={handleChange}
       />
       <span>{props.children}</span>
     </label>
