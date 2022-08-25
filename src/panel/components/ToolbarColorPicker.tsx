@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { useAppSelector, useAppDispatch } from "../store/hooks";
-import { setColor } from "../store/indicatorSlice";
 import "../index.less";
 import "./ToolbarButton.less";
+import React from "react";
+import { setColor } from "../store/indicatorSlice";
+import { useAppSelector, useAppDispatch } from "../store/hooks";
 
 function ToolbarColorPicker(props: {
   children?: React.ReactNode;

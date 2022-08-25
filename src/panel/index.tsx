@@ -1,9 +1,9 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
 import "./index.less";
+import React from "react";
 import Toolbar from "./components/Toolbar";
-import { store } from "./store/store";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 const appTheme = chrome.devtools.panels.themeName === "dark" ? "dark" : "light";
 

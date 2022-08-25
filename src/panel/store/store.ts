@@ -1,5 +1,5 @@
-import { configureStore } from "@reduxjs/toolkit";
 import indicatorReducer from "./indicatorSlice";
+import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({
   reducer: {
