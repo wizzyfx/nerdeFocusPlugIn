@@ -24,7 +24,7 @@ const Toolbar: React.FC = () => {
       id="toolbar"
     >
       <FocusScope>
-        <ToolbarToggle>Record</ToolbarToggle>
+        <ToolbarToggle className="record">Record</ToolbarToggle>
         <ToolbarButton icon="trash">Clear</ToolbarButton>
         <Separator />
         <ToolbarToggle

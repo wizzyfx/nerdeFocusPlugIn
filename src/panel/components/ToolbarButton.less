@@ -76,11 +76,11 @@ label.toolbarButton {
 
   input[type="checkbox"] {
     appearance: none;
-    &:before {
+    &::before {
       display: block;
       width: 1rem;
       color: var(--primary-color);
-      font-size: 1.17rem;
+      font-size: 1.2rem;
       font-family: Fontello;
       margin-right: 0.25rem;
       text-shadow: 0 0 1px var(--background-color);
@@ -89,6 +89,20 @@ label.toolbarButton {
     &:checked {
       &::before {
         content: "\f14a";
+      }
+    }
+    &.record {
+      &::before {
+        position: relative;
+        top: -0.01rem;
+        content: "\e805";
+      }
+      &:checked {
+        &::before {
+          color: rgb(200, 64, 49);
+          content: "\e805";
+          text-shadow: 0 0 2px #fff, 0 0 5px rgba(200, 64, 49, 0.5);
+        }
       }
     }
   }
