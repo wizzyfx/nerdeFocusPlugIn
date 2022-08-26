@@ -1,5 +1,6 @@
 import "./index.less";
 import React from "react";
+import History from "./components/History";
 import Toolbar from "./components/Toolbar";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
@@ -12,6 +13,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <div id="wrapper" className={appTheme}>
         <Toolbar />
+        <History />
       </div>
     </Provider>
   );

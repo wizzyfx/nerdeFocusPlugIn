@@ -6,6 +6,7 @@ import ToolbarButton from "./ToolbarButton";
 import ToolbarToggle from "./ToolbarToggle";
 import ToolbarColorPicker from "./ToolbarColorPicker";
 import { setColor, setAnimation, setVisibility } from "../store/indicatorSlice";
+import { setRecorder, clearHistory } from "../store/recorderSlice";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
 
 const Separator = () => {
@@ -14,6 +15,7 @@ const Separator = () => {
 
 const Toolbar: React.FC = () => {
   const indicatorState = useAppSelector((state) => state.indicator);
+  const recordingState = useAppSelector((state) => state.recorder);
   const dispatch = useAppDispatch();
 
   return (
@@ -24,8 +26,23 @@ const Toolbar: React.FC = () => {
       id="toolbar"
     >
       <FocusScope>
-        <ToolbarToggle className="record">Record</ToolbarToggle>
-        <ToolbarButton icon="trash">Clear</ToolbarButton>
+        <ToolbarToggle
+          className="record"
+          checked={recordingState.recording}
+          onChange={(event) => {
+            dispatch(setRecorder(event.target.checked));
+          }}
+        >
+          Record
+        </ToolbarToggle>
+        <ToolbarButton
+          icon="trash"
+          onClick={() => {
+            dispatch(clearHistory());
+          }}
+        >
+          Clear
+        </ToolbarButton>
         <Separator />
         <ToolbarToggle
           checked={indicatorState.visible}

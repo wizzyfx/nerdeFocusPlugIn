@@ -7,8 +7,11 @@ export const recorderSlice = createSlice({
     setRecorder: (state, action) => {
       state.recording = action.payload;
     },
+    clearHistory: (state) => {
+      state.history = [];
+    },
   },
 });
 
-export const { setRecorder } = recorderSlice.actions;
+export const { setRecorder, clearHistory } = recorderSlice.actions;
 export default recorderSlice.reducer;
