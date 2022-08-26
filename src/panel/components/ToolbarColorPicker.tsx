@@ -6,7 +6,7 @@ function ToolbarColorPicker(props: {
   value: string;
   children?: React.ReactNode;
   disabled?: boolean;
-  onChange?: () => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <label className="toolbarButton">

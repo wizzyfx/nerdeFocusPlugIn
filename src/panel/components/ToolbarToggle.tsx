@@ -6,7 +6,7 @@ function ToolbarToggle(props: {
   children?: React.ReactNode;
   disabled?: boolean;
   checked?: boolean;
-  onChange?: () => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <label className="toolbarButton">
