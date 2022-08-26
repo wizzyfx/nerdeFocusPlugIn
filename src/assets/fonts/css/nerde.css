@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'nerde';
-  src: url('../font/nerde.eot?29321458');
-  src: url('../font/nerde.eot?29321458#iefix') format('embedded-opentype'),
-       url('../font/nerde.woff2?29321458') format('woff2'),
-       url('../font/nerde.woff?29321458') format('woff'),
-       url('../font/nerde.ttf?29321458') format('truetype'),
-       url('../font/nerde.svg?29321458#nerde') format('svg');
+  src: url('../font/nerde.eot?68828905');
+  src: url('../font/nerde.eot?68828905#iefix') format('embedded-opentype'),
+       url('../font/nerde.woff2?68828905') format('woff2'),
+       url('../font/nerde.woff?68828905') format('woff'),
+       url('../font/nerde.ttf?68828905') format('truetype'),
+       url('../font/nerde.svg?68828905#nerde') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'nerde';
-    src: url('../font/nerde.svg?29321458#nerde') format('svg');
+    src: url('../font/nerde.svg?68828905#nerde') format('svg');
   }
 }
 */
@@ -58,6 +58,7 @@
 .icon-info-circled:before { content: '\e801'; } /* '' */
 .icon-eye-off:before { content: '\e802'; } /* '' */
 .icon-ccw:before { content: '\e803'; } /* '' */
+.icon-help-circled:before { content: '\e804'; } /* '' */
 .icon-trash:before { content: '\e83d'; } /* '' */
 .icon-check-empty:before { content: '\f096'; } /* '' */
 .icon-circle:before { content: '\f111'; } /* '' */
