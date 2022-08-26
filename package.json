@@ -6,7 +6,9 @@
     "build": "npm version patch && webpack --config webpack.config.ts --mode=production && zip -r -X -j nerdefocus.zip build",
     "dev": "webpack --config webpack.config.ts --mode=development",
     "watch": "webpack watch --config webpack.config.ts --mode=development",
-    "test": "jest"
+    "test": "jest",
+    "savefont": "make fontsave -f fontello.mk",
+    "openfont": "make fontopen -f fontello.mk"
   },
   "repository": {
     "type": "git",

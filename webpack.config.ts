@@ -48,6 +48,7 @@ const createIcons: CopyWebpackPlugin = new CopyWebpackPlugin({
       from: path.join(__dirname, "src", "assets"),
       to: path.join(__dirname, "build"),
       force: true,
+      filter: (path) => path.endsWith(".png"),
     },
   ],
 });
@@ -78,11 +79,7 @@ const config: Configuration = {
       },
       {
         test: /\.less$/i,
-        use: [
-          "style-loader",
-          "css-loader",
-          "less-loader",
-        ],
+        use: ["style-loader", "css-loader", "less-loader"],
       },
       {
         test: /\.(png)$/i,

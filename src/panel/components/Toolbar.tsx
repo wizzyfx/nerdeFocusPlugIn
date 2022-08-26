@@ -50,6 +50,7 @@ const Toolbar: React.FC = () => {
         >
           Indicator Color
         </ToolbarColorPicker>
+        <ToolbarButton icon="trash">About</ToolbarButton>
       </FocusScope>
     </div>
   );

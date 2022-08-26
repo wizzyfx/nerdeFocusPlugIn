@@ -26,16 +26,15 @@ label.toolbarButton {
     outline: 0.2rem solid var(--primary-color);
   }
   .icon:before {
-    font-size: 1.15rem;
     font-family: Fontello;
+    speak: never;
     margin-right: 0.25rem;
     text-shadow: 0 0 1px var(--background-color);
   }
   .trash:before {
     position: relative;
-    top: 0.02rem;
-    font-size: 1.25rem;
-    content: "\e807";
+    top: -0.025rem;
+    content: "\e83d";
   }
 }
 
@@ -53,6 +52,7 @@ label.toolbarButton {
     border: 1px solid var(--primary-color);
     box-shadow: 0 0 0 1px var(--background-color);
     border-radius: 0.33rem;
+    outline: 0;
     &::-webkit-color-swatch {
       border: none;
       padding: 0;
@@ -77,15 +77,19 @@ label.toolbarButton {
       }
     }
     appearance: none;
+    outline: 0;
     &::before {
       display: block;
       width: 1rem;
       color: var(--primary-color);
       font-size: 1.2rem;
       font-family: Fontello;
+      speak: never;
       margin-right: 0.25rem;
       text-shadow: 0 0 1px var(--background-color);
       content: "\f096";
+      position: relative;
+      top: 0.035rem;
     }
     &:checked {
       &::before {
@@ -94,17 +98,19 @@ label.toolbarButton {
     }
     &.record {
       &::before {
-        position: relative;
-        top: -0.01rem;
-        content: "\e805";
+        content: "\f111";
       }
       &:checked {
         &::before {
           animation: beat 1s infinite alternate;
           transform-origin: center;
           color: rgb(200, 64, 49);
-          content: "\e805";
+          content: "\f111";
           text-shadow: 0 0 2px #fff, 0 0 5px rgba(200, 64, 49, 0.5);
+          @media (prefers-reduced-motion) {
+            animation: none;
+            content: "\f28b";
+          }
         }
       }
     }
