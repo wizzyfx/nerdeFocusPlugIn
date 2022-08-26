@@ -14,6 +14,7 @@ label.toolbarButton {
   margin: 0.33rem;
   opacity: 0.9;
   padding: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
   &:hover {
     opacity: 1;
     background-color: var(--toolbar-hover-color);
@@ -30,22 +31,11 @@ label.toolbarButton {
     margin-right: 0.25rem;
     text-shadow: 0 0 1px var(--background-color);
   }
-  .record:before {
-    position: relative;
-    top: -0.01rem;
-    content: "\e805";
-  }
   .trash:before {
     position: relative;
-    top: -0.02rem;
+    top: 0.02rem;
     font-size: 1.25rem;
     content: "\e807";
-  }
-  .check:before {
-    content: "\f14a";
-  }
-  .uncheck:before {
-    content: "\f096";
   }
 }
 
@@ -53,6 +43,7 @@ label.toolbarButton {
   &:has(input:focus-visible) {
     outline: 0.2rem solid var(--primary-color);
   }
+
   input[type="color"] {
     width: 1rem;
     height: 1rem;
@@ -75,6 +66,16 @@ label.toolbarButton {
   }
 
   input[type="checkbox"] {
+    @keyframes beat {
+      85% {
+        opacity: 1;
+        scale: 1;
+      }
+      100% {
+        opacity: 0.66;
+        scale: 0.95;
+      }
+    }
     appearance: none;
     &::before {
       display: block;
@@ -99,6 +100,8 @@ label.toolbarButton {
       }
       &:checked {
         &::before {
+          animation: beat 1s infinite alternate;
+          transform-origin: center;
           color: rgb(200, 64, 49);
           content: "\e805";
           text-shadow: 0 0 2px #fff, 0 0 5px rgba(200, 64, 49, 0.5);
