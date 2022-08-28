@@ -9,5 +9,9 @@ export const store = configureStore({
   },
 });
 
+store.subscribe(() => {
+  console.log(store.getState().indicator);
+});
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
