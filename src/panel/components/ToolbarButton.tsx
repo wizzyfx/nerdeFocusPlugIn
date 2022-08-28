@@ -12,7 +12,7 @@ function ToolbarButton(props: {
   const shouldShowIcon = !!props.icon;
 
   return (
-    <button className="toolbarButton" style={props.style}>
+    <button className="toolbarButton" style={props.style} type="button">
       {shouldShowIcon && (
         <span aria-hidden className={`icon ${props.icon}`}></span>
       )}

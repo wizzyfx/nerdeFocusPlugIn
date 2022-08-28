@@ -18,6 +18,25 @@ const Toolbar: React.FC = () => {
   const recordingState = useAppSelector((state) => state.recorder);
   const dispatch = useAppDispatch();
 
+  const handleStateChange = (handler: Function) => {
+    return (event?: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event) {
+        dispatch(handler());
+      } else {
+        switch (event.target.type) {
+          case "color":
+            dispatch(handler(event.target.value));
+            break;
+          case "checkbox":
+            dispatch(handler(event.target.checked));
+            break;
+          default:
+            break;
+        }
+      }
+    };
+  };
+
   return (
     <div
       className={`toolbar`}
@@ -29,41 +48,30 @@ const Toolbar: React.FC = () => {
         <ToolbarToggle
           className="record"
           checked={recordingState.recording}
-          onChange={(event) => {
-            dispatch(setRecorder(event.target.checked));
-          }}
+          onChange={handleStateChange(setRecorder)}
         >
           Record
         </ToolbarToggle>
-        <ToolbarButton
-          icon="trash"
-          onClick={() => {
-            dispatch(clearHistory());
-          }}
-        >
+        <ToolbarButton icon="trash" onClick={handleStateChange(clearHistory)}>
           Clear
         </ToolbarButton>
         <Separator />
         <ToolbarToggle
           checked={indicatorState.visible}
-          onChange={(event) => {
-            dispatch(setVisibility(event.target.checked));
-          }}
+          onChange={handleStateChange(setVisibility)}
         >
           Show Indicator
         </ToolbarToggle>
         <Separator />
         <ToolbarToggle
           checked={indicatorState.animate}
-          onChange={(event) => {
-            dispatch(setAnimation(event.target.checked));
-          }}
+          onChange={handleStateChange(setAnimation)}
         >
           Animate Indicator
         </ToolbarToggle>
         <ToolbarColorPicker
           value={indicatorState.color}
-          onChange={(event) => dispatch(setColor(event.target.value))}
+          onChange={handleStateChange(setColor)}
         >
           Indicator Color
         </ToolbarColorPicker>
