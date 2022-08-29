@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
-import { useFocus, FocusScope, useFocusManager } from "react-aria";
 import "../index.less";
 import "./Toolbar.less";
+import React, { useEffect } from "react";
 import ToolbarButton from "./ToolbarButton";
-import ToolbarToggle from "./ToolbarToggle";
 import ToolbarColorPicker from "./ToolbarColorPicker";
+import ToolbarToggle from "./ToolbarToggle";
+import { ActionCreatorWithOptionalPayload } from "@reduxjs/toolkit";
 import { setColor, setAnimation, setVisibility } from "../store/indicatorSlice";
 import { setRecorder, clearHistory } from "../store/recorderSlice";
 import { useAppSelector, useAppDispatch } from "../store/hooks";
+import { useFocus, FocusScope, useFocusManager } from "react-aria";
 
 const Separator = () => {
   return <div className="separator"></div>;
@@ -18,7 +19,9 @@ const Toolbar: React.FC = () => {
   const recordingState = useAppSelector((state) => state.recorder);
   const dispatch = useAppDispatch();
 
-  const handleStateChange = (handler: Function) => {
+  const handleStateChange = (
+    handler: ActionCreatorWithOptionalPayload<any>
+  ) => {
     return (event?: React.ChangeEvent<HTMLInputElement>) => {
       if (!event) {
         dispatch(handler());

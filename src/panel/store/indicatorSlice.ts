@@ -1,8 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export interface IndicatorState {
+  color: string;
+  visible: boolean;
+  animate: boolean;
+}
+
 export const indicatorSlice = createSlice({
   name: "indicator",
-  initialState: { color: "#ff0000", visible: false, animate: false },
+  initialState: {
+    color: "#ff0000",
+    visible: false,
+    animate: false,
+  } as IndicatorState,
   reducers: {
     setColor: (state, action) => {
       state.color = action.payload;

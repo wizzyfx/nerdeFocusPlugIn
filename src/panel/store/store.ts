@@ -11,7 +11,7 @@ export const store = configureStore({
 
 let currentState: { color: string; visible: boolean; animate: boolean };
 store.subscribe(() => {
-  let previousState = currentState;
+  const previousState = currentState;
   currentState = store.getState().indicator;
   if (currentState !== previousState) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

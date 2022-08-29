@@ -1,8 +1,10 @@
+import { IndicatorState } from "../panel/store/indicatorSlice";
+
 class NerdeFocusCS {
   private activeElement: Element | null;
   private animateHighlight: boolean;
   private captureFocus: boolean;
-  private highlightColor: number[];
+  private highlightColor: string;
   private inFrame: boolean;
   private listeningFocus: boolean;
   private showHighlight: boolean;
@@ -11,7 +13,7 @@ class NerdeFocusCS {
     this.activeElement = null;
     this.animateHighlight = true;
     this.captureFocus = false;
-    this.highlightColor = [255, 0, 0];
+    this.highlightColor = "#f00";
     this.inFrame = false;
     this.listeningFocus = false;
     this.showHighlight = false;
@@ -171,13 +173,10 @@ class NerdeFocusCS {
   }
 
   init(): void {
-    chrome.runtime.onMessage.addListener(function (request, sender) {
-      console.log(
-        sender.tab
-          ? "from a content script:" + sender.tab.url
-          : "from the extension",
-        request
-      );
+    chrome.runtime.onMessage.addListener((indicatorState: IndicatorState) => {
+      this.showHighlight = indicatorState.visible;
+      this.highlightColor = indicatorState.color;
+      this.animateHighlight = indicatorState.animate;
     });
   }
 }
