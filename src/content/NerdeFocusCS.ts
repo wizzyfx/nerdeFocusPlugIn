@@ -1,22 +1,24 @@
-import { IndicatorState } from "../panel/store/indicatorSlice";
+import { ContentScriptState } from "../panel/store/store";
 
 class NerdeFocusCS {
   private activeElement: Element | null;
-  private animateHighlight: boolean;
+  private animateIndicator: boolean;
   private captureFocus: boolean;
-  private highlightColor: string;
+  private indicatorColor: string;
   private inFrame: boolean;
   private listeningFocus: boolean;
-  private showHighlight: boolean;
+  private showIndicator: boolean;
+  private readonly boundUpdateFocus: () => void;
 
   constructor() {
-    this.activeElement = null;
-    this.animateHighlight = true;
+    this.animateIndicator = true;
+    this.showIndicator = false;
+    this.indicatorColor = "#f00";
     this.captureFocus = false;
-    this.highlightColor = "#f00";
+    this.activeElement = null;
     this.inFrame = false;
     this.listeningFocus = false;
-    this.showHighlight = false;
+    this.boundUpdateFocus = this.updateFocus.bind(this);
   }
 
   /**
@@ -122,8 +124,60 @@ class NerdeFocusCS {
     return false;
   }
 
-  updateHighlightIndicator(): void {
-    if (!this.showHighlight || !this.activeElement) {
+  updateFocus(): void {
+    if (!this.captureFocus) {
+      //return;
+    }
+
+    this.activeElement = document.activeElement;
+    // chrome.runtime.sendMessage(
+    //   {
+    //     action: "updateFocus",
+    //     itemPath: "",
+    //     itemTag: "",
+    //     isVisuallyHidden: "",
+    //     isInFrame: "",
+    //   },
+    //   () => {
+    //     return null;
+    //   }
+    // );
+    this.updateIndicator();
+  }
+
+  getIndicator(): HTMLElement | null {
+    return document.querySelector("#nerdeFocusIndicator");
+  }
+
+  getBoundingClientRect(element: Element | null): any {
+    if (!element) {
+      return {};
+    }
+    const rect = element.getBoundingClientRect();
+    return {
+      bottom: rect.bottom,
+      height: rect.height,
+      left: rect.left,
+      right: rect.right,
+      top: rect.top,
+      width: rect.width,
+      x: rect.x,
+      y: rect.y,
+    };
+  }
+
+  insertIndicator(): void {
+    const indicatorTemplate = `<div id="nerdeFocusIndicator"></div>`;
+    this.removeIndicator();
+    const body: HTMLElement | null = document.querySelector("body");
+    if (body) {
+      body.insertAdjacentHTML("beforeend", indicatorTemplate);
+    }
+    this.updateIndicator();
+  }
+
+  updateIndicator(): void {
+    if (!this.showIndicator || !this.activeElement) {
       return;
     }
 
@@ -136,48 +190,48 @@ class NerdeFocusCS {
       left: number;
       right: number;
       top: number;
+      outline: string;
+      position: string;
     } = {
-      ...this.activeElement.getBoundingClientRect(),
+      ...this.getBoundingClientRect(this.activeElement),
+      outline: "1px solid #f00",
+      position: "fixed",
+      zIndex: 9999,
     };
 
     elementBox.width = Math.max(elementBox.width, 8);
     elementBox.height = Math.max(elementBox.height, 8);
 
-    const indicator: HTMLElement | null = document.querySelector(
-      "#nerdeFocusIndicator"
-    );
-
+    const indicator = this.getIndicator();
     if (indicator) {
-      Object.assign(indicator.style, elementBox);
+      indicator.style.width = `${elementBox.width}px`;
+      indicator.style.height = `${elementBox.height}px`;
+      indicator.style.left = `${elementBox.x}px`;
+      indicator.style.top = `${elementBox.y}px`;
+      indicator.style.outline = elementBox.outline;
+      indicator.style.position = elementBox.position;
     }
   }
 
-  updateFocus(): void {
-    if (!this.captureFocus) {
-      return;
+  removeIndicator(): void {
+    const indicator = this.getIndicator();
+    if (indicator) {
+      indicator.remove();
     }
-
-    this.activeElement = document.activeElement;
-    chrome.runtime.sendMessage(
-      {
-        action: "updateFocus",
-        itemPath: "",
-        itemTag: "",
-        isVisuallyHidden: "",
-        isInFrame: "",
-      },
-      () => {
-        return null;
-      }
-    );
   }
 
   init(): void {
-    chrome.runtime.onMessage.addListener((indicatorState: IndicatorState) => {
-      this.showHighlight = indicatorState.visible;
-      this.highlightColor = indicatorState.color;
-      this.animateHighlight = indicatorState.animate;
-    });
+    chrome.runtime.onMessage.addListener(
+      (indicatorState: ContentScriptState) => {
+        console.log(indicatorState);
+        this.showIndicator = indicatorState.visible;
+        this.indicatorColor = indicatorState.color;
+        this.animateIndicator = indicatorState.animate;
+        this.captureFocus = indicatorState.recording;
+        this.insertIndicator();
+      }
+    );
+    document.addEventListener("focus", this.boundUpdateFocus, true);
   }
 }
 export default NerdeFocusCS;
