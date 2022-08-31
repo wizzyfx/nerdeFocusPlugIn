@@ -1,5 +1,17 @@
 import { ContentScriptState } from "../panel/store/store";
 
+interface indicatorStyle {
+  height: number;
+  width: number;
+  left: number;
+  top: number;
+  outline: string;
+  position: string;
+  boxShadow: string;
+  borderRadius: string;
+  zIndex: number;
+}
+
 class NerdeFocusCS {
   private activeElement: Element | null;
   private animateIndicator: boolean;
@@ -8,7 +20,9 @@ class NerdeFocusCS {
   private inFrame: boolean;
   private listeningFocus: boolean;
   private showIndicator: boolean;
+  private readonly indicatorStyle: indicatorStyle;
   private readonly boundUpdateFocus: () => void;
+  private readonly boundUpdateIndicator: () => void;
 
   constructor() {
     this.animateIndicator = true;
@@ -18,7 +32,19 @@ class NerdeFocusCS {
     this.activeElement = null;
     this.inFrame = false;
     this.listeningFocus = false;
+    this.indicatorStyle = {
+      height: 0,
+      width: 0,
+      left: 0,
+      top: 0,
+      zIndex: 9999,
+      outline: `3px solid ${this.indicatorColor}`,
+      position: "fixed",
+      boxShadow: "0 0 0 4px #fff",
+      borderRadius: "3px",
+    };
     this.boundUpdateFocus = this.updateFocus.bind(this);
+    this.boundUpdateIndicator = this.updateIndicator.bind(this);
   }
 
   /**
@@ -149,21 +175,17 @@ class NerdeFocusCS {
     return document.querySelector("#nerdeFocusIndicator");
   }
 
-  getBoundingClientRect(element: Element | null): any {
+  getBoundingClientRect(element: Element | null): indicatorStyle {
     if (!element) {
-      return {};
+      return this.indicatorStyle;
     }
     const rect = element.getBoundingClientRect();
-    return {
-      bottom: rect.bottom,
+    return Object.assign(this.indicatorStyle, {
       height: rect.height,
       left: rect.left,
-      right: rect.right,
       top: rect.top,
       width: rect.width,
-      x: rect.x,
-      y: rect.y,
-    };
+    });
   }
 
   insertIndicator(): void {
@@ -181,22 +203,9 @@ class NerdeFocusCS {
       return;
     }
 
-    const elementBox: {
-      height: number;
-      width: number;
-      x: number;
-      y: number;
-      bottom: number;
-      left: number;
-      right: number;
-      top: number;
-      outline: string;
-      position: string;
-    } = {
+    const elementBox: indicatorStyle = {
       ...this.getBoundingClientRect(this.activeElement),
-      outline: "1px solid #f00",
-      position: "fixed",
-      zIndex: 9999,
+      outline: `3px solid ${this.indicatorColor}`,
     };
 
     elementBox.width = Math.max(elementBox.width, 8);
@@ -206,10 +215,12 @@ class NerdeFocusCS {
     if (indicator) {
       indicator.style.width = `${elementBox.width}px`;
       indicator.style.height = `${elementBox.height}px`;
-      indicator.style.left = `${elementBox.x}px`;
-      indicator.style.top = `${elementBox.y}px`;
+      indicator.style.left = `${elementBox.left}px`;
+      indicator.style.top = `${elementBox.top}px`;
       indicator.style.outline = elementBox.outline;
       indicator.style.position = elementBox.position;
+      indicator.style.borderRadius = "3px";
+      indicator.style.boxShadow = "0 0 3px 3px rgba(255,255,255,0.5)";
     }
   }
 
@@ -232,6 +243,7 @@ class NerdeFocusCS {
       }
     );
     document.addEventListener("focus", this.boundUpdateFocus, true);
+    document.addEventListener("scroll", this.boundUpdateIndicator, true);
   }
 }
 export default NerdeFocusCS;
