@@ -195,10 +195,10 @@ class NerdeFocusCS {
     if (body) {
       body.insertAdjacentHTML("beforeend", indicatorTemplate);
     }
-    this.updateIndicator();
+    this.updateIndicator(true);
   }
 
-  updateIndicator(): void {
+  updateIndicator(fullRepaint?: boolean): void {
     if (!this.showIndicator || !this.activeElement) {
       return;
     }
@@ -210,6 +210,8 @@ class NerdeFocusCS {
 
     elementBox.width = Math.max(elementBox.width, 8);
     elementBox.height = Math.max(elementBox.height, 8);
+    elementBox.left = Math.max(elementBox.left, 3);
+    elementBox.top = Math.max(elementBox.top, 3);
 
     const indicator = this.getIndicator();
     if (indicator) {
@@ -217,10 +219,15 @@ class NerdeFocusCS {
       indicator.style.height = `${elementBox.height}px`;
       indicator.style.left = `${elementBox.left}px`;
       indicator.style.top = `${elementBox.top}px`;
+
+      if (!fullRepaint) {
+        return;
+      }
+
       indicator.style.outline = elementBox.outline;
       indicator.style.position = elementBox.position;
-      indicator.style.borderRadius = "3px";
-      indicator.style.boxShadow = "0 0 3px 3px rgba(255,255,255,0.5)";
+      indicator.style.borderRadius = elementBox.borderRadius;
+      indicator.style.boxShadow = elementBox.boxShadow;
     }
   }
 
@@ -234,7 +241,6 @@ class NerdeFocusCS {
   init(): void {
     chrome.runtime.onMessage.addListener(
       (indicatorState: ContentScriptState) => {
-        console.log(indicatorState);
         this.showIndicator = indicatorState.visible;
         this.indicatorColor = indicatorState.color;
         this.animateIndicator = indicatorState.animate;

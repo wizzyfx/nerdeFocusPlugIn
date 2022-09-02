@@ -1,11 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const shouldReducedMotion = (): boolean => {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches || false;
+};
+
 export const indicatorSlice = createSlice({
   name: "indicator",
   initialState: {
     color: "#ff0000",
     visible: false,
-    animate: false,
+    animate: !shouldReducedMotion(),
   },
   reducers: {
     setColor: (state, action) => {
