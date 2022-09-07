@@ -10,6 +10,9 @@ interface indicatorStyle {
   boxShadow: string;
   borderRadius: string;
   zIndex: string;
+  outlineOffset: string;
+  pointerEvents: string;
+  transition: string;
 }
 
 class NerdeFocusCS {
@@ -20,6 +23,8 @@ class NerdeFocusCS {
   private inFrame: boolean;
   private listeningFocus: boolean;
   private showIndicator: boolean;
+  private readonly borderWidth: number;
+  private readonly borderOffset: number;
   private readonly indicatorStyle: indicatorStyle;
   private readonly boundUpdateFocus: () => void;
   private readonly boundUpdateIndicator: () => void;
@@ -32,16 +37,21 @@ class NerdeFocusCS {
     this.activeElement = null;
     this.inFrame = false;
     this.listeningFocus = false;
+    this.borderWidth = 3;
+    this.borderOffset = 2;
     this.indicatorStyle = {
       height: 0,
       width: 0,
       left: 0,
       top: 0,
-      zIndex: "9999",
-      outline: `3px solid ${this.indicatorColor}`,
+      zIndex: "2147483647",
+      pointerEvents: "none",
+      transition: "all 0.2s ease-in-out",
+      outline: `${this.borderWidth}px solid ${this.indicatorColor}`,
       position: "fixed",
-      boxShadow: "0 0 0 4px #fff",
-      borderRadius: "3px",
+      boxShadow: `0 0 0 ${(this.borderOffset + this.borderOffset) * 2}px #fff`,
+      borderRadius: `${this.borderOffset}px`,
+      outlineOffset: `${this.borderOffset}px`,
     };
     this.boundUpdateFocus = this.updateFocus.bind(this);
     this.boundUpdateIndicator = this.updateIndicator.bind(this);
@@ -202,40 +212,47 @@ class NerdeFocusCS {
     if (body) {
       body.insertAdjacentHTML("beforeend", indicatorTemplate);
     }
-    this.updateIndicator(true);
+    this.updateIndicator();
   }
 
-  updateIndicator(fullRepaint?: boolean): void {
+  updateIndicator(scrolling?: boolean): void {
     if (!this.showIndicator || !this.activeElement) {
       return;
     }
 
     const elementBox = this.getBoundingRect();
+    const { clientWidth, clientHeight } = window.document.documentElement;
+    const borderOffset = this.borderWidth + this.borderOffset;
 
-    elementBox.width = Math.max(elementBox.width, 8);
-    elementBox.height = Math.max(elementBox.height, 8);
-    elementBox.left = Math.max(elementBox.left, 3);
-    elementBox.top = Math.max(elementBox.top, 3);
+    elementBox.width = Math.max(elementBox.width, this.borderWidth * 3);
+    elementBox.width = Math.min(
+      elementBox.width,
+      clientWidth - borderOffset * 2
+    );
 
-    console.log(elementBox);
+    elementBox.height = Math.max(elementBox.height, this.borderWidth * 3);
+    elementBox.height = Math.min(
+      elementBox.height,
+      clientHeight - borderOffset * 2
+    );
+
+    elementBox.left = Math.max(elementBox.left, borderOffset);
+    elementBox.top = Math.max(elementBox.top, borderOffset);
 
     const indicator = this.getIndicator();
-    if (indicator) {
-      indicator.style.width = `${elementBox.width}px`;
-      indicator.style.height = `${elementBox.height}px`;
-      indicator.style.left = `${elementBox.left}px`;
-      indicator.style.top = `${elementBox.top}px`;
-
-      if (!fullRepaint) {
-        //return;
-      }
-
-      indicator.style.outline = elementBox.outline;
-      indicator.style.position = elementBox.position;
-      indicator.style.borderRadius = elementBox.borderRadius;
-      indicator.style.boxShadow = elementBox.boxShadow;
-      indicator.style.zIndex = elementBox.zIndex;
+    if (!indicator) {
+      return;
     }
+
+    Object.assign(
+      indicator.style,
+      Object.fromEntries(
+        Object.entries(elementBox).map(([key, value]) => [
+          key,
+          typeof value === "number" ? `${value}px` : value,
+        ])
+      )
+    );
   }
 
   removeIndicator(): void {
@@ -254,16 +271,18 @@ class NerdeFocusCS {
 
         if (!this.showIndicator && indicatorState.visible) {
           this.showIndicator = indicatorState.visible;
+          this.updateFocus()
           this.insertIndicator();
         } else if (this.showIndicator && !indicatorState.visible) {
           this.showIndicator = indicatorState.visible;
           this.removeIndicator();
         }
-
       }
     );
-    window.addEventListener("focus", this.boundUpdateFocus, true);
+    window.addEventListener("focusin", this.boundUpdateFocus, true);
+    window.addEventListener("focusout", this.boundUpdateFocus, true);
     window.addEventListener("scroll", this.boundUpdateIndicator, true);
+    window.addEventListener("resize", this.boundUpdateIndicator, true);
   }
 }
 export default NerdeFocusCS;
