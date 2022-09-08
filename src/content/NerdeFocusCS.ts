@@ -28,6 +28,8 @@ class NerdeFocusCS {
   private readonly indicatorStyle: indicatorStyle;
   private readonly boundUpdateFocus: () => void;
   private readonly boundUpdateIndicator: () => void;
+  private readonly intersectionObserver: IntersectionObserver;
+  private readonly resizeObserver: ResizeObserver;
 
   constructor() {
     this.animateIndicator = true;
@@ -55,6 +57,11 @@ class NerdeFocusCS {
     };
     this.boundUpdateFocus = this.updateFocus.bind(this);
     this.boundUpdateIndicator = this.updateIndicator.bind(this);
+    this.intersectionObserver = new IntersectionObserver(
+      this.boundUpdateIndicator,
+      { root: this.getIndicator(), rootMargin: "0px", threshold: 1.0 }
+    );
+    this.resizeObserver = new ResizeObserver(this.boundUpdateIndicator);
   }
 
   /**
@@ -184,6 +191,10 @@ class NerdeFocusCS {
 
     if (this.showIndicator) {
       this.updateIndicator();
+      this.resizeObserver.disconnect();
+      this.resizeObserver.observe(this.activeElement as HTMLElement);
+      this.intersectionObserver.disconnect();
+      this.intersectionObserver.observe(this.activeElement as HTMLElement);
     }
   }
 
