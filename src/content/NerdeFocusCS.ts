@@ -215,7 +215,7 @@ class NerdeFocusCS {
     this.updateIndicator();
   }
 
-  updateIndicator(scrolling?: boolean): void {
+  updateIndicator(): void {
     if (!this.showIndicator || !this.activeElement) {
       return;
     }
@@ -271,7 +271,7 @@ class NerdeFocusCS {
 
         if (!this.showIndicator && indicatorState.visible) {
           this.showIndicator = indicatorState.visible;
-          this.updateFocus()
+          this.updateFocus();
           this.insertIndicator();
         } else if (this.showIndicator && !indicatorState.visible) {
           this.showIndicator = indicatorState.visible;
