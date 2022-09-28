@@ -58,6 +58,7 @@ const config: Configuration = {
     inject: path.join(__dirname, "src", "content", "index.ts"),
     panel: path.join(__dirname, "src", "panel", "index.tsx"),
     devtools: path.join(__dirname, "src", "devtools", "index.ts"),
+    service: path.join(__dirname, "src", "service", "index.ts"),
   },
   mode: "development",
   devtool: "source-map",
