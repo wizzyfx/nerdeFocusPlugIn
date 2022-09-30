@@ -6,7 +6,19 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 
+
 const appTheme = chrome.devtools.panels.themeName === "dark" ? "dark" : "light";
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  switch (request.command) {
+    case "toggleIndicator":
+      store.dispatch({ type: "indicator/toggle" });
+      sendResponse({ farewell: "goodbye" });
+      break;
+    default:
+      break;
+  }
+});
 
 const App: React.FC = () => {
   return (
