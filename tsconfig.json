@@ -13,8 +13,17 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": false,
-    "jsx": "react",
-    "types": ["chrome", "jest"]
+    "types": ["chrome", "jest"],
+    "plugins": [
+      {
+        "name": "ts-lit-plugin",
+        "strict": true,
+        "rules": {
+          "no-unknown-tag-name": "off",
+          "no-unknown-event": "warn"
+        }
+      }
+    ]
   },
   "ts-node": {
     "compilerOptions": {
