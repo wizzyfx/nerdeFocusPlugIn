@@ -1,4 +1,4 @@
-import { ContentScriptState } from "../panel/store/store";
+import { ContentScriptState } from '../panel';
 
 interface indicatorStyle {
   height: number;
@@ -34,7 +34,7 @@ class NerdeFocusCS {
   constructor() {
     this.animateIndicator = true;
     this.showIndicator = false;
-    this.indicatorColor = "#f00";
+    this.indicatorColor = '#f00';
     this.captureFocus = false;
     this.activeElement = null;
     this.inFrame = false;
@@ -46,11 +46,11 @@ class NerdeFocusCS {
       width: 0,
       left: 0,
       top: 0,
-      zIndex: "2147483647",
-      pointerEvents: "none",
-      transition: "all 0.2s ease-in-out",
+      zIndex: '2147483647',
+      pointerEvents: 'none',
+      transition: 'all 0.2s ease-in-out',
       outline: `${this.borderWidth}px solid ${this.indicatorColor}`,
-      position: "fixed",
+      position: 'fixed',
       boxShadow: `0 0 0 ${(this.borderOffset + this.borderOffset) * 2}px #fff`,
       borderRadius: `${this.borderOffset}px`,
       outlineOffset: `${this.borderOffset}px`,
@@ -59,7 +59,7 @@ class NerdeFocusCS {
     this.boundUpdateIndicator = this.updateIndicator.bind(this);
     this.intersectionObserver = new IntersectionObserver(
       this.boundUpdateIndicator,
-      { root: this.getIndicator(), rootMargin: "0px", threshold: 1.0 }
+      { root: this.getIndicator(), rootMargin: '0px', threshold: 1.0 }
     );
     this.resizeObserver = new ResizeObserver(this.boundUpdateIndicator);
   }
@@ -71,16 +71,16 @@ class NerdeFocusCS {
    */
   getPath(node: HTMLElement | null): string {
     const commonNames = [
-      "selected",
-      "active",
-      "focus",
-      "hover",
-      "enable",
-      "hidden",
-      "visible",
-      "valid",
-      "disable",
-      "col-",
+      'selected',
+      'active',
+      'focus',
+      'hover',
+      'enable',
+      'hidden',
+      'visible',
+      'valid',
+      'disable',
+      'col-',
     ];
     const path: Array<string> = [];
     let currentNode: Element | null = node;
@@ -139,7 +139,7 @@ class NerdeFocusCS {
       currentNode = nodeParent;
     }
 
-    return path.reverse().join(">");
+    return path.reverse().join('>');
   }
 
   isVisuallyHidden(node: HTMLElement | null): boolean {
@@ -155,10 +155,10 @@ class NerdeFocusCS {
 
       if (
         (currentNode.offsetHeight <= 8 || currentNode.offsetWidth <= 8) &&
-        (nodeStyle.overflow === "hidden" ||
-          nodeStyle.overflowX === "hidden" ||
-          nodeStyle.overflowY === "hidden" ||
-          nodeStyle.clip === "rect(0px, 0px, 0px, 0px)")
+        (nodeStyle.overflow === 'hidden' ||
+          nodeStyle.overflowX === 'hidden' ||
+          nodeStyle.overflowY === 'hidden' ||
+          nodeStyle.clipPath === 'rect(0px, 0px, 0px, 0px)')
       ) {
         return true;
       }
@@ -177,11 +177,11 @@ class NerdeFocusCS {
     if (this.captureFocus) {
       chrome.runtime.sendMessage(
         {
-          action: "updateFocus",
-          itemPath: "",
-          itemTag: "",
-          isVisuallyHidden: "",
-          isInFrame: "",
+          action: 'updateFocus',
+          itemPath: '',
+          itemTag: '',
+          isVisuallyHidden: '',
+          isInFrame: '',
         },
         () => {
           return null;
@@ -199,7 +199,7 @@ class NerdeFocusCS {
   }
 
   getIndicator(): HTMLElement | null {
-    return document.querySelector("#nerdeFocusIndicator");
+    return document.querySelector('#nerdeFocusIndicator');
   }
 
   getBoundingRect(): indicatorStyle {
@@ -219,9 +219,9 @@ class NerdeFocusCS {
   insertIndicator(): void {
     const indicatorTemplate = `<div id="nerdeFocusIndicator"></div>`;
     this.removeIndicator();
-    const body: HTMLElement | null = document.querySelector("body");
+    const body: HTMLElement | null = document.querySelector('body');
     if (body) {
-      body.insertAdjacentHTML("beforeend", indicatorTemplate);
+      body.insertAdjacentHTML('beforeend', indicatorTemplate);
     }
     this.updateIndicator();
   }
@@ -260,7 +260,7 @@ class NerdeFocusCS {
       Object.fromEntries(
         Object.entries(elementBox).map(([key, value]) => [
           key,
-          typeof value === "number" ? `${value}px` : value,
+          typeof value === 'number' ? `${value}px` : value,
         ])
       )
     );
@@ -290,10 +290,10 @@ class NerdeFocusCS {
         }
       }
     );
-    window.addEventListener("focusin", this.boundUpdateFocus, true);
-    window.addEventListener("focusout", this.boundUpdateFocus, true);
-    window.addEventListener("scroll", this.boundUpdateIndicator, true);
-    window.addEventListener("resize", this.boundUpdateIndicator, true);
+    window.addEventListener('focusin', this.boundUpdateFocus, true);
+    window.addEventListener('focusout', this.boundUpdateFocus, true);
+    window.addEventListener('scroll', this.boundUpdateIndicator, true);
+    window.addEventListener('resize', this.boundUpdateIndicator, true);
   }
 }
 export default NerdeFocusCS;

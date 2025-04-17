@@ -65,14 +65,15 @@ const config: Configuration = {
   module: {
     rules: [
       {
-        test: /\.(ts|js)x?$/,
+        test: /\.(ts|js)$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
+        use: [{
+          loader: "esbuild-loader",
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-typescript'],
+            loader: "ts",
+            target: "es6",
           },
-        },
+        }],
       },
       {
         test: /\.less$/i,

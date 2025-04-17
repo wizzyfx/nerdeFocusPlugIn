@@ -11,10 +11,5 @@
     "react-hooks/exhaustive-deps": "warn",
     "react/prop-types": "off"
   },
-  "settings": {
-    "react": {
-      "pragma": "React",
-      "version": "detect"
-    }
-  }
+  "settings": {}
 }

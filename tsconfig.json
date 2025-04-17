@@ -14,6 +14,8 @@
     "resolveJsonModule": true,
     "noEmit": false,
     "types": ["chrome", "jest"],
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "plugins": [
       {
         "name": "ts-lit-plugin",

@@ -5,6 +5,40 @@
     <title>NerdeFocus</title>
   </head>
   <body>
-    <div id="nerdeFocus"></div>
+    <div id="wrapper" class="light">
+      <div
+        class="toolbar"
+        role="toolbar"
+        aria-label="NerdeFocus Controls"
+        id="toolbar"
+      >
+        <label class="toolbarButton">
+          <input type="checkbox" class="record" />
+          <span>Record</span>
+        </label>
+        <button class="toolbarButton" type="button">
+          <span aria-hidden="true" class="icon trash"></span>
+          <span>Clear</span>
+        </button>
+        <div class="separator"></div>
+        <label class="toolbarButton">
+          <input type="checkbox" />
+          <span>Show Indicator</span>
+        </label>
+        <div class="separator"></div>
+        <label class="toolbarButton">
+          <input type="checkbox" />
+          <span>Animate Indicator</span>
+        </label>
+        <label class="toolbarButton">
+          <input type="color" />
+          <span>Indicator Color</span>
+        </label>
+        <button class="toolbarButton" type="button" style="margin-left: auto">
+          <span aria-hidden="true" class="icon info"></span>
+          <span class="visually-hidden">About</span>
+        </button>
+      </div>
+    </div>
   </body>
 </html>

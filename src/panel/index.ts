@@ -1,8 +1,17 @@
 import './index.less';
+import './components/toolbar';
 
-const appTheme = chrome.devtools.panels.themeName === 'dark' ? 'dark' : 'light';
+export interface ContentScriptState {
+  color: string;
+  visible: boolean;
+  animate: boolean;
+  recording: boolean;
+}
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+const appTheme =
+  chrome?.devtools?.panels?.themeName === 'dark' ? 'dark' : 'light';
+
+chrome?.runtime?.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.command) {
     case 'toggleIndicator':
       sendResponse({ farewell: 'goodbye' });
