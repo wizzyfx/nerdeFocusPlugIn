@@ -1,4 +1,4 @@
-import { ContentScriptState } from '../panel';
+import { ContentScriptState, PanelIntercom, FocusState } from '../panel';
 
 interface indicatorStyle {
   height: number;
@@ -32,9 +32,10 @@ class NerdeFocusCS {
   private readonly resizeObserver: ResizeObserver;
 
   constructor() {
-    this.animateIndicator = true;
+    this.animateIndicator =
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches || false;
     this.showIndicator = false;
-    this.indicatorColor = '#f00';
+    this.indicatorColor = '#FF0000';
     this.captureFocus = false;
     this.activeElement = null;
     this.inFrame = false;
@@ -273,23 +274,45 @@ class NerdeFocusCS {
     }
   }
 
-  init(): void {
-    chrome.runtime.onMessage.addListener(
-      (indicatorState: ContentScriptState) => {
-        this.indicatorColor = indicatorState.color;
-        this.animateIndicator = indicatorState.animate;
-        this.captureFocus = indicatorState.recording;
+  setState(state: ContentScriptState): void {
+    this.indicatorColor = state.color;
+    this.animateIndicator = state.animate;
+    this.captureFocus = state.recording;
+    if (!this.showIndicator && state.visible) {
+      this.showIndicator = state.visible;
+      this.updateFocus();
+      this.insertIndicator();
+    } else if (this.showIndicator && !state.visible) {
+      this.showIndicator = state.visible;
+      this.removeIndicator();
+    }
+  }
 
-        if (!this.showIndicator && indicatorState.visible) {
-          this.showIndicator = indicatorState.visible;
-          this.updateFocus();
-          this.insertIndicator();
-        } else if (this.showIndicator && !indicatorState.visible) {
-          this.showIndicator = indicatorState.visible;
-          this.removeIndicator();
+  getState(): ContentScriptState {
+    return {
+      color: this.indicatorColor,
+      visible: this.showIndicator,
+      animate: this.animateIndicator,
+      recording: this.captureFocus,
+    };
+  }
+
+  init(): void {
+    chrome?.runtime?.onMessage.addListener(
+      (request: PanelIntercom, sender, sendResponse) => {
+        switch (request.command) {
+          case 'getState':
+            sendResponse(this.getState());
+            break;
+          case 'setState':
+            this.setState(request.payload);
+            break;
+          default:
+            break;
         }
       }
     );
+
     window.addEventListener('focusin', this.boundUpdateFocus, true);
     window.addEventListener('focusout', this.boundUpdateFocus, true);
     window.addEventListener('scroll', this.boundUpdateIndicator, true);
