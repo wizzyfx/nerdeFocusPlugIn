@@ -31,15 +31,19 @@ html,
     --border-color: #d3e3fd;
     --background-color: #fff;
     --toolbar-background-color: #fff;
-    --toolbar-hover-color: rgba(0, 0, 0, 0.1);
+    --toolbar-hover-color: color-mix(in srgb, var(--primary-color) 8%, transparent);
+    --toolbar-active-color: #1b6ef3;
+    --attention-color: #dc362e;
   }
 
   &.dark {
-    --primary-color: #989ca4;
+    --primary-color: #c7c7c7;
     --border-color: #494c50;
     --background-color: #202124;
     --toolbar-background-color: #292a2d;
-    --toolbar-hover-color: rgba(255, 255, 255, 0.1);
+    --toolbar-hover-color: color-mix(in srgb, var(--primary-color) 8%, transparent);
+    --toolbar-active-color: #7cacf8;
+    --attention-color: #e46962;
   }
 
   background-color: var(--background-color);

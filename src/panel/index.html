@@ -13,28 +13,33 @@
         id="toolbar"
       >
         <label class="toolbarButton">
-          <input type="checkbox" class="record" />
+          <input type="checkbox" class="record" id="recordToggle" />
           <span>Record</span>
         </label>
-        <button class="toolbarButton" type="button">
+        <button class="toolbarButton" type="button" id="clearButton">
           <span aria-hidden="true" class="icon trash"></span>
           <span>Clear</span>
         </button>
         <div class="separator"></div>
         <label class="toolbarButton">
-          <input type="checkbox" />
+          <input type="checkbox" id="indicatorToggle" />
           <span>Show Indicator</span>
         </label>
         <div class="separator"></div>
         <label class="toolbarButton">
-          <input type="checkbox" />
+          <input type="checkbox" id="animationToggle" />
           <span>Animate Indicator</span>
         </label>
         <label class="toolbarButton">
-          <input type="color" />
+          <input type="color" id="indicatorColorPicker" value="#FF0000" />
           <span>Indicator Color</span>
         </label>
-        <button class="toolbarButton" type="button" style="margin-left: auto">
+        <button
+          class="toolbarButton"
+          type="button"
+          style="margin-left: auto"
+          id="aboutButton"
+        >
           <span aria-hidden="true" class="icon info"></span>
           <span class="visually-hidden">About</span>
         </button>

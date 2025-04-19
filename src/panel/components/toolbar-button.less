@@ -28,7 +28,7 @@ label.toolbarButton {
   .icon:before {
     font-family: Fontello;
     speak: never;
-    margin-right: 0.25rem;
+    margin-right: 0.33rem;
     text-shadow: 0 0 1px var(--background-color);
   }
   .trash:before {
@@ -92,15 +92,18 @@ label.toolbarButton {
       font-size: 1.2rem;
       font-family: Fontello;
       speak: never;
-      margin-right: 0.25rem;
+      margin-right: 0.33rem;
       text-shadow: 0 0 1px var(--background-color);
       content: "\f096";
       position: relative;
       top: 0.035rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     &:checked {
       &::before {
         content: "\f14a";
+        color: var(--toolbar-active-color);
       }
     }
     &.record {
@@ -109,14 +112,12 @@ label.toolbarButton {
       }
       &:checked {
         &::before {
-          animation: beat 1s infinite alternate;
+          animation: beat 3s infinite alternate;
           transform-origin: center;
-          color: rgb(200, 64, 49);
-          content: "\f111";
-          text-shadow: 0 0 2px #fff, 0 0 5px rgba(200, 64, 49, 0.5);
+          color: var(--attention-color);
+          content: "\f28b";
           @media (prefers-reduced-motion) {
             animation: none;
-            content: "\f28b";
           }
         }
       }

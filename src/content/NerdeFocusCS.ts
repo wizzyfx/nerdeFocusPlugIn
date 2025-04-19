@@ -95,7 +95,7 @@ class NerdeFocusCS {
 
       let nodeName = nodeTag;
 
-      // Check to if we can use a unique id for selector
+      // Check if we can use a unique id for selector
       if (
         currentNode.id &&
         /^[A-Za-z][\da-zA-Z_:.-]/.test(currentNode.id) &&
