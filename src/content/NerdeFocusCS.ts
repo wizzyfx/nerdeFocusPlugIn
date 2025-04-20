@@ -1,4 +1,4 @@
-import { ContentScriptState, PanelIntercom, FocusState } from '../panel';
+import { ContentScriptState, PanelIntercom } from '../panel';
 
 interface indicatorStyle {
   height: number;
@@ -32,8 +32,7 @@ class NerdeFocusCS {
   private readonly resizeObserver: ResizeObserver;
 
   constructor() {
-    this.animateIndicator =
-      !window.matchMedia('(prefers-reduced-motion: reduce)').matches || false;
+    this.animateIndicator = true;
     this.showIndicator = false;
     this.indicatorColor = '#FF0000';
     this.captureFocus = false;
@@ -41,7 +40,7 @@ class NerdeFocusCS {
     this.inFrame = false;
     this.listeningFocus = false;
     this.borderWidth = 3;
-    this.borderOffset = 2;
+    this.borderOffset = 1;
     this.indicatorStyle = {
       height: 0,
       width: 0,
@@ -49,10 +48,12 @@ class NerdeFocusCS {
       top: 0,
       zIndex: '2147483647',
       pointerEvents: 'none',
-      transition: 'all 0.2s ease-in-out',
+      transition: this.animateIndicator ? 'all 0.2s ease-in-out' : 'none',
       outline: `${this.borderWidth}px solid ${this.indicatorColor}`,
       position: 'fixed',
-      boxShadow: `0 0 0 ${(this.borderOffset + this.borderOffset) * 2}px #fff`,
+      boxShadow: `0 0 0 ${
+        this.borderOffset * 2 + this.borderWidth
+      }px #FFFFFF80`,
       borderRadius: `${this.borderOffset}px`,
       outlineOffset: `${this.borderOffset}px`,
     };
@@ -143,6 +144,39 @@ class NerdeFocusCS {
     return path.reverse().join('>');
   }
 
+  getIndicator(): HTMLElement | null {
+    return document.querySelector('#nerdeFocusIndicator');
+  }
+
+  getBoundingRect(): indicatorStyle {
+    if (!this.activeElement) {
+      return this.indicatorStyle;
+    }
+
+    const rect = this.activeElement.getBoundingClientRect();
+    return Object.assign(this.indicatorStyle, {
+      height: rect.height,
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+    });
+  }
+
+  setState(state: ContentScriptState): void {
+    this.indicatorColor = state.color;
+    this.animateIndicator = state.animate;
+    this.captureFocus = state.recording;
+    if (!this.showIndicator && state.visible) {
+      this.showIndicator = state.visible;
+      this.updateFocus();
+      this.insertIndicator();
+    } else if (this.showIndicator && !state.visible) {
+      this.showIndicator = state.visible;
+      this.removeIndicator();
+    }
+    this.updateIndicator();
+  }
+
   isVisuallyHidden(node: HTMLElement | null): boolean {
     let currentNode: HTMLElement | null = node;
 
@@ -199,24 +233,6 @@ class NerdeFocusCS {
     }
   }
 
-  getIndicator(): HTMLElement | null {
-    return document.querySelector('#nerdeFocusIndicator');
-  }
-
-  getBoundingRect(): indicatorStyle {
-    if (!this.activeElement) {
-      return this.indicatorStyle;
-    }
-
-    const rect = this.activeElement.getBoundingClientRect();
-    return Object.assign(this.indicatorStyle, {
-      height: rect.height,
-      left: rect.left,
-      top: rect.top,
-      width: rect.width,
-    });
-  }
-
   insertIndicator(): void {
     const indicatorTemplate = `<div id="nerdeFocusIndicator"></div>`;
     this.removeIndicator();
@@ -251,6 +267,11 @@ class NerdeFocusCS {
     elementBox.left = Math.max(elementBox.left, borderOffset);
     elementBox.top = Math.max(elementBox.top, borderOffset);
 
+    elementBox.outline = `${this.borderWidth}px solid ${this.indicatorColor}`;
+    elementBox.transition = this.animateIndicator
+      ? 'all 0.2s ease-in-out'
+      : 'none';
+
     const indicator = this.getIndicator();
     if (!indicator) {
       return;
@@ -274,36 +295,10 @@ class NerdeFocusCS {
     }
   }
 
-  setState(state: ContentScriptState): void {
-    this.indicatorColor = state.color;
-    this.animateIndicator = state.animate;
-    this.captureFocus = state.recording;
-    if (!this.showIndicator && state.visible) {
-      this.showIndicator = state.visible;
-      this.updateFocus();
-      this.insertIndicator();
-    } else if (this.showIndicator && !state.visible) {
-      this.showIndicator = state.visible;
-      this.removeIndicator();
-    }
-  }
-
-  getState(): ContentScriptState {
-    return {
-      color: this.indicatorColor,
-      visible: this.showIndicator,
-      animate: this.animateIndicator,
-      recording: this.captureFocus,
-    };
-  }
-
   init(): void {
     chrome?.runtime?.onMessage.addListener(
       (request: PanelIntercom, sender, sendResponse) => {
         switch (request.command) {
-          case 'getState':
-            sendResponse(this.getState());
-            break;
           case 'setState':
             this.setState(request.payload);
             break;

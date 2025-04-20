@@ -31,9 +31,12 @@ class NerdeFocusPanel {
   private readonly indicatorColorPicker: HTMLInputElement | null;
   private readonly aboutButton: HTMLButtonElement | null;
   private readonly theme: 'dark' | 'light';
+  private readonly reducedMotion: boolean;
 
   constructor() {
     this.wrapper = document.getElementById('wrapper');
+    this.reducedMotion =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches || false;
     this.recordToggle = document.getElementById(
       'recordToggle'
     ) as HTMLInputElement;
@@ -57,7 +60,7 @@ class NerdeFocusPanel {
     this.state = {
       color: '#FF0000',
       visible: false,
-      animate: false,
+      animate: !this.reducedMotion,
       recording: false,
     };
     this.init();
@@ -75,17 +78,37 @@ class NerdeFocusPanel {
     });
   }
 
-  setStateFromPage(): void {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs
-        .sendMessage(<number>tabs[0].id, {
-          command: 'getState',
-        } as PanelIntercom)
-        .then((response) => {
-          this.state = response;
-          this.updateUI();
-        });
+  sendState(): void {
+    chrome?.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome?.tabs?.sendMessage(<number>tabs[0].id, {
+        command: 'setState',
+        payload: this.state,
+      } as PanelIntercom);
     });
+  }
+
+  handleIndicatorToggle(): void {
+    if (!this.indicatorToggle) {
+      return;
+    }
+    this.state.visible = this.indicatorToggle.checked;
+    this.updateUI();
+  }
+
+  handleAnimationToggle(): void {
+    if (!this.animationToggle) {
+      return;
+    }
+    this.state.animate = this.animationToggle.checked;
+    this.updateUI();
+  }
+
+  handleIndicatorColorPicker(): void {
+    if (!this.indicatorColorPicker) {
+      return;
+    }
+    this.state.color = this.indicatorColorPicker.value;
+    this.sendState();
   }
 
   updateUI(): void {
@@ -102,18 +125,39 @@ class NerdeFocusPanel {
     this.animationToggle.checked = this.state.animate;
     this.indicatorColorPicker.value = this.state.color;
 
-    this.indicatorColorPicker.disabled = !this.state.visible;
-    this.animationToggle.disabled = !this.state.visible;
+    if (this.state.visible) {
+      this.indicatorColorPicker.removeAttribute('disabled');
+      this.animationToggle.removeAttribute('disabled');
+    } else {
+      this.indicatorColorPicker.setAttribute('disabled', 'disabled');
+      this.animationToggle.setAttribute('disabled', 'disabled');
+    }
+
+    this.sendState();
   }
 
   init(): void {
-    if (!this.wrapper) {
+    if (
+      !this.wrapper ||
+      !this.indicatorToggle ||
+      !this.animationToggle ||
+      !this.indicatorColorPicker ||
+      !this.aboutButton
+    ) {
       return;
     }
-
     this.wrapper.className = this.theme;
+    this.indicatorToggle.addEventListener('change', () =>
+      this.handleIndicatorToggle()
+    );
+    this.animationToggle.addEventListener('change', () =>
+      this.handleAnimationToggle()
+    );
+    this.indicatorColorPicker.addEventListener('input', () =>
+      this.handleIndicatorColorPicker()
+    );
     this.startListener();
-    this.setStateFromPage();
+    this.updateUI();
   }
 }
 

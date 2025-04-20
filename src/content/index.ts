@@ -1,3 +1,3 @@
 import NerdeFocusCS from "./NerdeFocusCS";
-const nf = new NerdeFocusCS();
-nf.init();
+const nerdeFocusCS = new NerdeFocusCS();
+nerdeFocusCS.init();
