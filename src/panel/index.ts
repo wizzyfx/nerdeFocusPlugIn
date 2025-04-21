@@ -1,6 +1,5 @@
 import './index.less';
 import './components/toolbar';
-import NerdeFocusCS from '../content/NerdeFocusCS';
 
 export interface ContentScriptState {
   color: string;
@@ -18,11 +17,11 @@ export interface FocusState {
 
 export interface PanelIntercom {
   command: 'getState' | 'setState' | 'updateFocus';
-  payload: ContentScriptState;
+  payload: ContentScriptState | FocusState;
 }
 
 class NerdeFocusPanel {
-  private state: ContentScriptState;
+  private readonly state: ContentScriptState;
   private readonly wrapper: HTMLElement | null;
   private readonly recordToggle: HTMLInputElement | null;
   private readonly clearButton: HTMLButtonElement | null;
@@ -61,16 +60,15 @@ class NerdeFocusPanel {
       color: '#FF0000',
       visible: false,
       animate: !this.reducedMotion,
-      recording: false,
+      recording: true,
     };
-    this.init();
   }
 
   startListener(): void {
     chrome?.runtime?.onMessage.addListener((request, sender, sendResponse) => {
       switch (request.command) {
-        case 'toggleIndicator':
-          sendResponse({ farewell: 'goodbye' });
+        case 'updateFocus':
+          console.log(request.payload, sender);
           break;
         default:
           break;

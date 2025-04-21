@@ -23,9 +23,7 @@
     }
   },
 
-  "background": {
-    "service_worker": "service.js"
-  },
+
 
   "devtools_page": "devtools.html",
 
