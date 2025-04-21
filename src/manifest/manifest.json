@@ -23,8 +23,6 @@
     }
   },
 
-
-
   "devtools_page": "devtools.html",
 
   "host_permissions": ["http://*/*", "https://*/*"],
@@ -33,7 +31,8 @@
     {
       "matches": ["http://*/*", "https://*/*"],
       "match_origin_as_fallback": true,
-      "js": ["inject.js"]
+      "js": ["inject.js"],
+      "all_frames": true
     }
   ]
 }

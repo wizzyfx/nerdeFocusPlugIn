@@ -328,27 +328,27 @@ class NerdeFocusCS {
       },
       true
     );
-    // window.addEventListener(
-    //   'focusout',
-    //   () => {
-    //     this.updateIndicator();
-    //   },
-    //   true
-    // );
-    // window.addEventListener(
-    //   'scroll',
-    //   () => {
-    //     this.updateIndicator();
-    //   },
-    //   true
-    // );
-    // window.addEventListener(
-    //   'resize',
-    //   () => {
-    //     this.updateIndicator();
-    //   },
-    //   true
-    // );
+    window.addEventListener(
+      'focusout',
+      () => {
+        this.updateIndicator();
+      },
+      true
+    );
+    window.addEventListener(
+      'scroll',
+      () => {
+        this.updateIndicator();
+      },
+      true
+    );
+    window.addEventListener(
+      'resize',
+      () => {
+        this.updateIndicator();
+      },
+      true
+    );
   }
 }
 
