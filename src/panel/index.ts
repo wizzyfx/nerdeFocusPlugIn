@@ -11,13 +11,23 @@ export interface ContentScriptState {
 export interface FocusState {
   itemPath: string;
   itemTag: string;
+  itemFrame: number;
   isVisuallyHidden: boolean;
   isInFrame: boolean;
 }
 
+export interface FrameInfo {
+  frameId: number;
+}
+
 export interface PanelIntercom {
-  command: 'getState' | 'setState' | 'updateFocus';
-  payload: ContentScriptState | FocusState;
+  command:
+    | 'getState'
+    | 'setState'
+    | 'updateFocus'
+    | 'inspectElement'
+    | 'registerFrame';
+  payload?: ContentScriptState | FocusState;
 }
 
 class NerdeFocusPanel {
@@ -65,15 +75,17 @@ class NerdeFocusPanel {
   }
 
   startListener(): void {
-    chrome?.runtime?.onMessage.addListener((request, sender, sendResponse) => {
-      switch (request.command) {
-        case 'updateFocus':
-          console.log(request.payload, sender);
-          break;
-        default:
-          break;
+    chrome?.runtime?.onMessage.addListener(
+      (request: PanelIntercom, sender, sendResponse) => {
+        switch (request.command) {
+          case 'updateFocus':
+            console.log(request.payload);
+            break;
+          default:
+            break;
+        }
       }
-    });
+    );
   }
 
   sendState(): void {

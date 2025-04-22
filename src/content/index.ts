@@ -1,4 +1,9 @@
-import { ContentScriptState, PanelIntercom, FocusState } from '../panel';
+import {
+  ContentScriptState,
+  PanelIntercom,
+  FocusState,
+  FrameInfo,
+} from '../panel';
 
 interface indicatorStyle {
   height: number;
@@ -20,7 +25,7 @@ class NerdeFocusCS {
   private animateIndicator: boolean;
   private captureFocus: boolean;
   private indicatorColor: string;
-  private inFrame: boolean;
+  private readonly inFrame: boolean;
   private listeningFocus: boolean;
   private showIndicator: boolean;
   private readonly borderWidth: number;
@@ -29,6 +34,7 @@ class NerdeFocusCS {
   private readonly intersectionObserver: IntersectionObserver;
   private readonly resizeObserver: ResizeObserver;
   private readonly mutationObserver: MutationObserver;
+  private frameId: number;
 
   constructor() {
     this.animateIndicator = true;
@@ -37,6 +43,7 @@ class NerdeFocusCS {
     this.captureFocus = false;
     this.activeElement = null;
     this.inFrame = window.self !== window.top;
+    this.frameId = -1;
     this.listeningFocus = false;
     this.borderWidth = 3;
     this.borderOffset = 1;
@@ -216,8 +223,40 @@ class NerdeFocusCS {
           this.activeElement as HTMLElement
         ),
         isInFrame: this.inFrame,
+        itemFrame: this.frameId,
       } as FocusState,
     } as PanelIntercom);
+  }
+
+  registerFrame(): void {
+    chrome?.runtime?.sendMessage(
+      {
+        command: 'registerFrame',
+      } as PanelIntercom,
+      (response: FrameInfo) => {
+        this.frameId = response.frameId;
+      }
+    );
+  }
+
+  registerListeners(): void {
+    ['focusin', 'focusout', 'scroll', 'resize'].forEach((event) => {
+      window.addEventListener(
+        event,
+        () => {
+          event === 'focusin' ? this.updateFocus() : this.updateIndicator();
+        },
+        true
+      );
+    });
+  }
+
+  inspectElement(CssPath: string): void {
+    if (document.querySelector(CssPath)) {
+      chrome?.devtools?.inspectedWindow?.eval(
+        `inspect(document.querySelector(${CssPath}))`
+      );
+    }
   }
 
   updateFocus(): void {
@@ -244,16 +283,6 @@ class NerdeFocusCS {
         subtree: false,
       });
     }
-  }
-
-  insertIndicator(): void {
-    const indicatorTemplate = `<div id="nerdeFocusIndicator"></div>`;
-    this.removeIndicator();
-    const body: HTMLElement | null = document.querySelector('body');
-    if (body) {
-      body.insertAdjacentHTML('beforeend', indicatorTemplate);
-    }
-    this.updateIndicator();
   }
 
   updateIndicator(): void {
@@ -301,6 +330,16 @@ class NerdeFocusCS {
     );
   }
 
+  insertIndicator(): void {
+    const indicatorTemplate = `<div id="nerdeFocusIndicator"></div>`;
+    this.removeIndicator();
+    const body: HTMLElement | null = document.querySelector('body');
+    if (body) {
+      body.insertAdjacentHTML('beforeend', indicatorTemplate);
+    }
+    this.updateIndicator();
+  }
+
   removeIndicator(): void {
     const indicator = this.getIndicator();
     if (indicator) {
@@ -321,34 +360,8 @@ class NerdeFocusCS {
       }
     );
 
-    window.addEventListener(
-      'focusin',
-      () => {
-        this.updateFocus();
-      },
-      true
-    );
-    window.addEventListener(
-      'focusout',
-      () => {
-        this.updateIndicator();
-      },
-      true
-    );
-    window.addEventListener(
-      'scroll',
-      () => {
-        this.updateIndicator();
-      },
-      true
-    );
-    window.addEventListener(
-      'resize',
-      () => {
-        this.updateIndicator();
-      },
-      true
-    );
+    this.registerFrame();
+    this.registerListeners();
   }
 }
 
