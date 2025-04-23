@@ -3,6 +3,7 @@ import {
   PanelIntercom,
   FocusState,
   FrameInfo,
+  PageInfo,
 } from '../panel';
 
 interface indicatorStyle {
@@ -35,6 +36,7 @@ class NerdeFocusCS {
   private readonly resizeObserver: ResizeObserver;
   private readonly mutationObserver: MutationObserver;
   private frameId: number;
+  private resetChecker: number;
 
   constructor() {
     this.animateIndicator = true;
@@ -63,6 +65,7 @@ class NerdeFocusCS {
       borderRadius: `${this.borderOffset}px`,
       outlineOffset: `${this.borderOffset}px`,
     };
+    this.resetChecker = 0;
     this.intersectionObserver = new IntersectionObserver(
       () => {
         this.updateIndicator();
@@ -222,8 +225,8 @@ class NerdeFocusCS {
         isVisuallyHidden: this.isVisuallyHidden(
           this.activeElement as HTMLElement
         ),
-        isInFrame: this.inFrame,
         itemFrame: this.frameId,
+        isInFrame: this.inFrame,
       } as FocusState,
     } as PanelIntercom);
   }
@@ -237,18 +240,46 @@ class NerdeFocusCS {
         this.frameId = response.frameId;
       }
     );
+
+    chrome?.runtime?.sendMessage({
+      command: 'pageLoaded',
+      payload: {
+        frameId: this.frameId,
+        isInFrame: this.inFrame,
+        pageURL: window.location.href,
+      } as PageInfo,
+    } as PanelIntercom);
   }
 
   registerListeners(): void {
-    ['focusin', 'focusout', 'scroll', 'resize'].forEach((event) => {
-      window.addEventListener(
-        event,
-        () => {
-          event === 'focusin' ? this.updateFocus() : this.updateIndicator();
-        },
-        true
-      );
-    });
+    window.addEventListener(
+      'focus',
+      () => {
+        this.updateFocus();
+      },
+      true
+    );
+    window.addEventListener(
+      'blur',
+      () => {
+        this.checkReset();
+      },
+      true
+    );
+    window.addEventListener(
+      'scroll',
+      () => {
+        this.updateIndicator();
+      },
+      true
+    );
+    window.addEventListener(
+      'resize',
+      () => {
+        this.updateIndicator();
+      },
+      true
+    );
   }
 
   inspectElement(CssPath: string): void {
@@ -257,6 +288,22 @@ class NerdeFocusCS {
         `inspect(document.querySelector(${CssPath}))`
       );
     }
+  }
+
+  checkReset(): void {
+    if (!this.showIndicator && !this.captureFocus) {
+      return;
+    }
+
+    if (this.resetChecker) {
+      clearTimeout(this.resetChecker);
+    }
+
+    this.resetChecker = setTimeout(() => {
+      if (document.activeElement?.tagName === 'BODY') {
+        this.updateFocus();
+      }
+    }, 100);
   }
 
   updateFocus(): void {

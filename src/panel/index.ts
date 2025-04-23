@@ -6,6 +6,7 @@ export interface ContentScriptState {
   visible: boolean;
   animate: boolean;
   recording: boolean;
+  activeFrame: number;
 }
 
 export interface FocusState {
@@ -20,14 +21,21 @@ export interface FrameInfo {
   frameId: number;
 }
 
+export interface PageInfo {
+  frameId: number;
+  pageURL: string;
+  isInFrame: boolean;
+}
+
 export interface PanelIntercom {
   command:
     | 'getState'
     | 'setState'
     | 'updateFocus'
     | 'inspectElement'
-    | 'registerFrame';
-  payload?: ContentScriptState | FocusState;
+    | 'registerFrame'
+    | 'pageLoaded';
+  payload?: ContentScriptState | FocusState | PageInfo;
 }
 
 class NerdeFocusPanel {
@@ -71,6 +79,7 @@ class NerdeFocusPanel {
       visible: false,
       animate: !this.reducedMotion,
       recording: true,
+      activeFrame: -1,
     };
   }
 
@@ -80,6 +89,15 @@ class NerdeFocusPanel {
         switch (request.command) {
           case 'updateFocus':
             console.log(request.payload);
+            if (sender.frameId != null) {
+              this.state.activeFrame = sender.frameId;
+            }
+            break;
+          case 'pageLoaded':
+            this.sendState();
+            break;
+          case 'getState':
+            sendResponse(this.state);
             break;
           default:
             break;
@@ -156,16 +174,22 @@ class NerdeFocusPanel {
     ) {
       return;
     }
+
     this.wrapper.className = this.theme;
-    this.indicatorToggle.addEventListener('change', () =>
-      this.handleIndicatorToggle()
+
+    this.indicatorToggle.addEventListener(
+      'change',
+      this.handleIndicatorToggle.bind(this)
     );
-    this.animationToggle.addEventListener('change', () =>
-      this.handleAnimationToggle()
+    this.animationToggle.addEventListener(
+      'change',
+      this.handleAnimationToggle.bind(this)
     );
-    this.indicatorColorPicker.addEventListener('input', () =>
-      this.handleIndicatorColorPicker()
+    this.indicatorColorPicker.addEventListener(
+      'input',
+      this.handleIndicatorColorPicker.bind(this)
     );
+
     this.startListener();
     this.updateUI();
   }
