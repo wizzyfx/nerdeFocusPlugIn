@@ -150,7 +150,7 @@ class NerdeFocusPanel {
   }
 
   appendFocusEvent(event: FocusState): void {
-    const eventTemplate = `<li class=""><span class="tag">${event.itemTag}</span>${event.itemPath}</li>`;
+    const eventTemplate = `<li class=""><code class="tag">${event.itemTag}</code>${event.itemPath}</li>`;
     if (this.historyList) {
       this.historyList.insertAdjacentHTML('beforeend', eventTemplate);
     }

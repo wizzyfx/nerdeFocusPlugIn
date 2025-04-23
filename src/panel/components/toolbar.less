@@ -1,7 +1,7 @@
 #toolbar {
   align-items: center;
   background-color: var(--toolbar-background-color);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid transparent;
   display: flex;
   flex: 0 0 auto;
   padding: 0 0.25rem;
@@ -9,6 +9,8 @@
   flex-direction: row;
   justify-content: flex-start;
   user-select: none;
+  box-shadow: 0 0 1rem 0 var(--shadow-color);
+  z-index: 0;
 
   .separator {
     width: 1px;
