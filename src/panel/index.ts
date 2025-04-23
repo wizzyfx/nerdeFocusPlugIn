@@ -49,11 +49,17 @@ class NerdeFocusPanel {
   private readonly aboutButton: HTMLButtonElement | null;
   private readonly theme: 'dark' | 'light';
   private readonly reducedMotion: boolean;
+  private historyList: HTMLElement;
 
   constructor() {
     this.wrapper = document.getElementById('wrapper');
+
+    this.theme =
+      chrome?.devtools?.panels?.themeName === 'dark' ? 'dark' : 'light';
+
     this.reducedMotion =
       window.matchMedia('(prefers-reduced-motion: reduce)').matches || false;
+
     this.recordToggle = document.getElementById(
       'recordToggle'
     ) as HTMLInputElement;
@@ -72,8 +78,8 @@ class NerdeFocusPanel {
     this.aboutButton = document.getElementById(
       'aboutButton'
     ) as HTMLButtonElement;
-    this.theme =
-      chrome?.devtools?.panels?.themeName === 'dark' ? 'dark' : 'light';
+    this.historyList = document.getElementById('history') as HTMLElement;
+
     this.state = {
       color: '#FF0000',
       visible: false,
@@ -88,10 +94,14 @@ class NerdeFocusPanel {
       (request: PanelIntercom, sender, sendResponse) => {
         switch (request.command) {
           case 'updateFocus':
-            console.log(request.payload);
             if (sender.frameId != null) {
-              this.state.activeFrame = sender.frameId;
+              if (this.state.activeFrame !== sender.frameId) {
+                this.state.activeFrame = sender.frameId;
+                this.sendState();
+              }
             }
+            this.appendFocusEvent(request.payload as FocusState);
+            console.log(request.payload);
             break;
           case 'pageLoaded':
             this.sendState();
@@ -138,6 +148,16 @@ class NerdeFocusPanel {
     this.state.color = this.indicatorColorPicker.value;
     this.sendState();
   }
+
+  appendFocusEvent(event: FocusState): void {
+    const eventTemplate = `<li class=""><span class="tag">${event.itemTag}</span>${event.itemPath}</li>`;
+    if (this.historyList) {
+      this.historyList.insertAdjacentHTML('beforeend', eventTemplate);
+    }
+    this.historyList.scrollTop = this.historyList.scrollHeight;
+  }
+
+  appendPageEvent(event: FocusEvent): void {}
 
   updateUI(): void {
     if (

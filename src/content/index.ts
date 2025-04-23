@@ -27,7 +27,6 @@ class NerdeFocusCS {
   private captureFocus: boolean;
   private indicatorColor: string;
   private readonly inFrame: boolean;
-  private listeningFocus: boolean;
   private showIndicator: boolean;
   private readonly borderWidth: number;
   private readonly borderOffset: number;
@@ -46,7 +45,6 @@ class NerdeFocusCS {
     this.activeElement = null;
     this.inFrame = window.self !== window.top;
     this.frameId = -1;
-    this.listeningFocus = false;
     this.borderWidth = 3;
     this.borderOffset = 1;
     this.indicatorStyle = {
@@ -144,9 +142,9 @@ class NerdeFocusCS {
         nodeParent.querySelectorAll(nodeTag).values()
       );
 
-      if (siblingNodes.length > 1) {
+      if (siblingNodes.length > 0) {
         const nodeIndex = siblingNodes.indexOf(currentNode);
-        if (nodeIndex > 1) {
+        if (nodeIndex > 0) {
           nodeName = `${nodeName}:nth-child(${nodeIndex + 1})`;
         }
       }
@@ -180,14 +178,15 @@ class NerdeFocusCS {
     this.indicatorColor = state.color;
     this.animateIndicator = state.animate;
     this.captureFocus = state.recording;
-    if (!this.showIndicator && state.visible) {
-      this.showIndicator = state.visible;
+    this.showIndicator = state.visible && this.frameId === state.activeFrame;
+
+    if (this.showIndicator) {
       this.updateFocus();
       this.insertIndicator();
-    } else if (this.showIndicator && !state.visible) {
-      this.showIndicator = state.visible;
+    } else {
       this.removeIndicator();
     }
+
     this.updateIndicator();
   }
 
@@ -269,14 +268,14 @@ class NerdeFocusCS {
     window.addEventListener(
       'scroll',
       () => {
-        this.updateIndicator();
+        this.updateIndicator(true);
       },
       true
     );
     window.addEventListener(
       'resize',
       () => {
-        this.updateIndicator();
+        this.updateIndicator(true);
       },
       true
     );
@@ -291,7 +290,7 @@ class NerdeFocusCS {
   }
 
   checkReset(): void {
-    if (!this.showIndicator && !this.captureFocus) {
+    if ((!this.showIndicator && !this.captureFocus) || this.inFrame) {
       return;
     }
 
@@ -303,7 +302,7 @@ class NerdeFocusCS {
       if (document.activeElement?.tagName === 'BODY') {
         this.updateFocus();
       }
-    }, 100);
+    }, 250);
   }
 
   updateFocus(): void {
@@ -318,7 +317,7 @@ class NerdeFocusCS {
     }
 
     if (this.showIndicator) {
-      this.updateIndicator();
+      this.updateIndicator(false);
       this.resizeObserver.disconnect();
       this.resizeObserver.observe(this.activeElement as HTMLElement);
       this.intersectionObserver.disconnect();
@@ -332,7 +331,7 @@ class NerdeFocusCS {
     }
   }
 
-  updateIndicator(): void {
+  updateIndicator(suppressAnimation: boolean = false): void {
     if (!this.showIndicator || !this.activeElement) {
       return;
     }
@@ -357,9 +356,10 @@ class NerdeFocusCS {
     elementBox.top = Math.max(elementBox.top, borderOffset);
 
     elementBox.outline = `${this.borderWidth}px solid ${this.indicatorColor}`;
-    elementBox.transition = this.animateIndicator
-      ? 'all 0.2s ease-in-out'
-      : 'none';
+    elementBox.transition =
+      !suppressAnimation && this.animateIndicator
+        ? 'all 0.2s ease-in-out'
+        : 'none';
 
     const indicator = this.getIndicator();
     if (!indicator) {
