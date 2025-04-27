@@ -96,64 +96,87 @@ class NerdeFocusCS {
       'disable',
       'col-',
     ];
+    /**
+     * Returns an array of sibling elements for the given HTML element
+     * @param element - The HTML element to find siblings for
+     * @returns Array of sibling elements, excluding the input element
+     */
+    const getSiblings = (element: HTMLElement): Element[] => {
+      const ELEMENT_NODE_TYPE = 1;
+
+      if (!element?.parentNode) {
+        return [];
+      }
+
+      const parent = element.parentNode;
+      return Array.from(parent.children).filter(
+        (sibling) => sibling.nodeType === ELEMENT_NODE_TYPE
+      );
+    };
+
     const path: Array<string> = [];
-    let currentNode: Element | null = node;
+
+    let currentNode: HTMLElement | null = node;
 
     while (currentNode) {
       const nodeTag = currentNode.localName.toLowerCase() || null;
-      const nodeParent: Element | null = currentNode.parentElement;
+      const nodeParent: HTMLElement | null = currentNode.parentElement;
 
       if (!nodeTag || !nodeParent) {
         break;
       }
 
-      let nodeName = nodeTag;
+      if (nodeTag === 'body') {
+        path.push(nodeTag);
+        break;
+      }
 
       // Check if we can use a unique id for selector
       if (
         currentNode.id &&
-        /^[A-Za-z][\da-zA-Z_:.-]/.test(currentNode.id) &&
+        /^[A-Za-z][\da-zA-Z_-]*$/.test(currentNode.id) &&
         document.querySelectorAll(`#${currentNode.id}`).length === 1
       ) {
-        nodeName = `#${currentNode.id}`;
+        path.push(`#${currentNode.id}`);
+        break;
       }
 
       // Check if we can use a unique class name for selector
-      Array.from(currentNode.classList).every((className) => {
+      const classList = Array.from(currentNode.classList).filter(
+        (className) =>
+          /^[\da-zA-Z_-]*$/.test(className) && !commonNames.includes(className)
+      );
+
+      const isUnique = classList.some((className) => {
         if (
-          /^[\da-zA-Z_-]/.test(className) &&
-          !commonNames.includes(className) &&
-          document.querySelectorAll(`.${className}`).length === 1
+          document.querySelectorAll(`${nodeTag}.${className}`).length === 1
         ) {
-          nodeName = `${nodeName}.${className}`;
-          return false;
+          path.push(`${nodeTag}.${className}`);
+          return true;
         }
-        return true;
+        return false;
       });
 
-      // If we have a unique result, return it
-      if (nodeName !== nodeTag) {
-        path.push(nodeName);
+      if (isUnique) {
         break;
       }
 
       // Try using a nth child selector if no unique matches are found
-      const siblingNodes = Array.from(
-        nodeParent.querySelectorAll(nodeTag).values()
-      );
+      const siblingNodes = getSiblings(currentNode);
 
-      if (siblingNodes.length > 0) {
-        const nodeIndex = siblingNodes.indexOf(currentNode);
-        if (nodeIndex > 0) {
-          nodeName = `${nodeName}:nth-child(${nodeIndex + 1})`;
-        }
+      if (siblingNodes && siblingNodes.length <= 1) {
+        path.push(nodeTag);
+      } else {
+        const siblingIndex = siblingNodes.indexOf(currentNode);
+        path.push(
+          siblingIndex ? `${nodeTag}:nth-child(${siblingIndex + 1})` : nodeTag
+        );
       }
 
-      path.push(nodeName);
       currentNode = nodeParent;
     }
 
-    return path.reverse().join('>');
+    return path.reverse().join(' > ');
   }
 
   getIndicator(): HTMLElement | null {
