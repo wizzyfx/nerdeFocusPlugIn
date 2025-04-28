@@ -49,7 +49,7 @@ class NerdeFocusPanel {
   private readonly aboutButton: HTMLButtonElement | null;
   private readonly theme: 'dark' | 'light';
   private readonly reducedMotion: boolean;
-  private historyList: HTMLElement;
+  private readonly historyList: HTMLElement;
 
   constructor() {
     this.wrapper = document.getElementById('wrapper');
@@ -84,14 +84,18 @@ class NerdeFocusPanel {
       color: '#FF0000',
       visible: false,
       animate: !this.reducedMotion,
-      recording: true,
-      activeFrame: -1,
+      recording: false,
+      activeFrame: 0,
     };
   }
 
   startListener(): void {
+    const tabId = chrome?.devtools?.inspectedWindow?.tabId;
     chrome?.runtime?.onMessage.addListener(
       (request: PanelIntercom, sender, sendResponse) => {
+        if (sender.tab?.id !== tabId) {
+          return;
+        }
         switch (request.command) {
           case 'updateFocus':
             if (sender.frameId != null) {
@@ -101,9 +105,9 @@ class NerdeFocusPanel {
               }
             }
             this.appendFocusEvent(request.payload as FocusState);
-            console.log(request.payload);
             break;
           case 'pageLoaded':
+
             this.sendState();
             break;
           case 'getState':
@@ -123,6 +127,14 @@ class NerdeFocusPanel {
         payload: this.state,
       } as PanelIntercom);
     });
+  }
+
+  handleRecordToggle(): void {
+    if (!this.recordToggle) {
+      return;
+    }
+    this.state.recording = this.recordToggle.checked;
+    this.updateUI();
   }
 
   handleIndicatorToggle(): void {
@@ -147,6 +159,18 @@ class NerdeFocusPanel {
     }
     this.state.color = this.indicatorColorPicker.value;
     this.sendState();
+  }
+
+  handleAboutButton(): void {
+    chrome?.tabs?.create({
+      url: 'https://github.com/wizzyfx/nerdeFocusPlugIn/issues',
+    });
+  }
+
+  handleClearButton(): void {
+    if (this.historyList) {
+      this.historyList.innerHTML = '';
+    }
   }
 
   appendFocusEvent(event: FocusState): void {
@@ -190,13 +214,23 @@ class NerdeFocusPanel {
       !this.indicatorToggle ||
       !this.animationToggle ||
       !this.indicatorColorPicker ||
-      !this.aboutButton
+      !this.aboutButton ||
+      !this.recordToggle ||
+      !this.clearButton
     ) {
       return;
     }
 
     this.wrapper.className = this.theme;
 
+    this.recordToggle.addEventListener(
+      'change',
+      this.handleRecordToggle.bind(this)
+    );
+    this.clearButton.addEventListener(
+      'click',
+      this.handleClearButton.bind(this)
+    );
     this.indicatorToggle.addEventListener(
       'change',
       this.handleIndicatorToggle.bind(this)
@@ -208,6 +242,10 @@ class NerdeFocusPanel {
     this.indicatorColorPicker.addEventListener(
       'input',
       this.handleIndicatorColorPicker.bind(this)
+    );
+    this.aboutButton.addEventListener(
+      'click',
+      this.handleAboutButton.bind(this)
     );
 
     this.startListener();

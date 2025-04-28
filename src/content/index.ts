@@ -44,7 +44,7 @@ class NerdeFocusCS {
     this.captureFocus = false;
     this.activeElement = null;
     this.inFrame = window.self !== window.top;
-    this.frameId = -1;
+    this.frameId = 0;
     this.borderWidth = 3;
     this.borderOffset = 1;
     this.indicatorStyle = {
@@ -148,9 +148,7 @@ class NerdeFocusCS {
       );
 
       const isUnique = classList.some((className) => {
-        if (
-          document.querySelectorAll(`${nodeTag}.${className}`).length === 1
-        ) {
+        if (document.querySelectorAll(`${nodeTag}.${className}`).length === 1) {
           path.push(`${nodeTag}.${className}`);
           return true;
         }
@@ -201,13 +199,16 @@ class NerdeFocusCS {
     this.indicatorColor = state.color;
     this.animateIndicator = state.animate;
     this.captureFocus = state.recording;
-    this.showIndicator = state.visible && this.frameId === state.activeFrame;
-
-    if (this.showIndicator) {
-      this.updateFocus();
-      this.insertIndicator();
-    } else {
-      this.removeIndicator();
+    
+    const showIndicatorTest = state.visible && this.frameId === state.activeFrame;
+    if (showIndicatorTest !== this.showIndicator) {
+      this.showIndicator = showIndicatorTest;
+      if (this.showIndicator) {
+        this.updateFocus();
+        this.insertIndicator();
+      } else {
+        this.removeIndicator();
+      }
     }
 
     this.updateIndicator();
@@ -333,10 +334,11 @@ class NerdeFocusCS {
       return;
     }
 
-    this.activeElement = document.activeElement;
-
-    if (this.captureFocus) {
-      this.sendFocusState();
+    if (this.activeElement != document.activeElement) {
+      this.activeElement = document.activeElement;
+      if (this.captureFocus) {
+        this.sendFocusState();
+      }
     }
 
     if (this.showIndicator) {
