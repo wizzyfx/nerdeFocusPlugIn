@@ -31,7 +31,7 @@
       line-height: 1.5rem;
     }
 
-    &:last-of-type{
+    &:last-of-type {
       border-bottom: none;
       background-color: var(--toolbar-hover-color);
       &:before {
@@ -49,6 +49,34 @@
       border-radius: 0.25rem;
       margin-right: 0.5rem;
       vertical-align: middle;
+    }
+
+    span.info {
+      &:before {
+        font-family: Fontello;
+        speak: never;
+        display: inline-block;
+        color: var(--primary-color);
+        padding: 0.15rem 0.25rem;
+        border-radius: 0.25rem;
+        margin-right: 0.5rem;
+        vertical-align: middle;
+        background-color: var(--toolbar-hover-color);
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+      &.reset:before {
+        content: '\e800';
+      }
+      &.frame:before {
+        content: '\f2d0';
+      }
+      &.hidden:before {
+        content: '\e802';
+      }
+    }
+    &.pageload{
+      background-color: var(--highlight-color);
     }
   }
 }

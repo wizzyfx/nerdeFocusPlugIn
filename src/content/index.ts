@@ -199,8 +199,9 @@ class NerdeFocusCS {
     this.indicatorColor = state.color;
     this.animateIndicator = state.animate;
     this.captureFocus = state.recording;
-    
-    const showIndicatorTest = state.visible && this.frameId === state.activeFrame;
+
+    const showIndicatorTest =
+      state.visible && this.frameId === state.activeFrame;
     if (showIndicatorTest !== this.showIndicator) {
       this.showIndicator = showIndicatorTest;
       if (this.showIndicator) {
@@ -377,8 +378,18 @@ class NerdeFocusCS {
       clientHeight - borderOffset * 2
     );
 
-    elementBox.left = Math.max(elementBox.left, borderOffset);
-    elementBox.top = Math.max(elementBox.top, borderOffset);
+    const isBody = this.activeElement.tagName === 'BODY';
+
+    elementBox.left = Math.max(
+      elementBox.left,
+      isBody ? borderOffset : -elementBox.width
+    );
+    elementBox.top = Math.max(
+      elementBox.top,
+      isBody ? borderOffset : -elementBox.height
+    );
+    elementBox.left = Math.min(elementBox.left, clientWidth);
+    elementBox.top = Math.min(elementBox.top, clientHeight);
 
     elementBox.outline = `${this.borderWidth}px solid ${this.indicatorColor}`;
     elementBox.transition =

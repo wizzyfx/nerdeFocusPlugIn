@@ -107,8 +107,8 @@ class NerdeFocusPanel {
             this.appendFocusEvent(request.payload as FocusState);
             break;
           case 'pageLoaded':
-
             this.sendState();
+            this.appendPageEvent(request.payload as PageInfo);
             break;
           case 'getState':
             sendResponse(this.state);
@@ -174,14 +174,42 @@ class NerdeFocusPanel {
   }
 
   appendFocusEvent(event: FocusState): void {
-    const eventTemplate = `<li class=""><code class="tag">${event.itemTag}</code>${event.itemPath}</li>`;
+    const resetIcon = `<span class="info reset" title="Focus was reset and returned to BODY"></span>`;
+    const hiddenIcon = `<span class="info hidden" title="May be visually hidden or out of viewport"></span>`;
+    const frameIcon = `<span class="info frame" title="Element is in a frame"></span>`;
+
+    let eventIcons = '';
+
+    if (event.isVisuallyHidden) {
+      eventIcons += hiddenIcon;
+    }
+
+    if (event.isInFrame) {
+      eventIcons += frameIcon;
+    }
+
+    if (event.itemTag === 'BODY') {
+      eventIcons += resetIcon;
+    }
+
+    const eventTemplate = `<li><code class="tag">${event.itemTag}</code>${eventIcons}${event.itemPath}</li>`;
     if (this.historyList) {
       this.historyList.insertAdjacentHTML('beforeend', eventTemplate);
     }
     this.historyList.scrollTop = this.historyList.scrollHeight;
   }
 
-  appendPageEvent(event: FocusEvent): void {}
+  appendPageEvent(event: PageInfo): void {
+    if(event.isInFrame){
+      return;
+    }
+
+    const eventTemplate = `<li class="pageload">Page Loaded <span class="url">${event.pageURL}</span></li>`;
+    if (this.historyList) {
+      this.historyList.insertAdjacentHTML('beforeend', eventTemplate);
+    }
+    this.historyList.scrollTop = this.historyList.scrollHeight;
+  }
 
   updateUI(): void {
     if (
