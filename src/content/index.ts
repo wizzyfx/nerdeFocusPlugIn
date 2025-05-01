@@ -44,7 +44,7 @@ class NerdeFocusCS {
     this.captureFocus = false;
     this.activeElement = null;
     this.inFrame = window.self !== window.top;
-    this.frameId = 0;
+    this.frameId = this.inFrame ? -1 : 0;
     this.borderWidth = 3;
     this.borderOffset = 1;
     this.indicatorStyle = {
@@ -62,7 +62,7 @@ class NerdeFocusCS {
       }px #FFFFFF80`,
       borderRadius: `${this.borderOffset}px`,
       outlineOffset: `${this.borderOffset}px`,
-    };
+    } as indicatorStyle;
     this.resetChecker = 0;
     this.intersectionObserver = new IntersectionObserver(
       () => {
@@ -200,10 +200,11 @@ class NerdeFocusCS {
     this.animateIndicator = state.animate;
     this.captureFocus = state.recording;
 
-    const showIndicatorTest =
+    const shouldShowIndicator =
       state.visible && this.frameId === state.activeFrame;
-    if (showIndicatorTest !== this.showIndicator) {
-      this.showIndicator = showIndicatorTest;
+
+    if (this.showIndicator !== shouldShowIndicator) {
+      this.showIndicator = shouldShowIndicator;
       if (this.showIndicator) {
         this.updateFocus();
         this.insertIndicator();
@@ -249,26 +250,15 @@ class NerdeFocusCS {
         isVisuallyHidden: this.isVisuallyHidden(
           this.activeElement as HTMLElement
         ),
-        itemFrame: this.frameId,
         isInFrame: this.inFrame,
       } as FocusState,
     } as PanelIntercom);
   }
 
-  registerFrame(): void {
-    chrome?.runtime?.sendMessage(
-      {
-        command: 'registerFrame',
-      } as PanelIntercom,
-      (response: FrameInfo) => {
-        this.frameId = response.frameId;
-      }
-    );
-
+  sendPageLoad(): void {
     chrome?.runtime?.sendMessage({
       command: 'pageLoaded',
       payload: {
-        frameId: this.frameId,
         isInFrame: this.inFrame,
         pageURL: window.location.href,
       } as PageInfo,
@@ -280,6 +270,7 @@ class NerdeFocusCS {
       'focus',
       () => {
         this.updateFocus();
+        this.checkReset();
       },
       true
     );
@@ -303,6 +294,21 @@ class NerdeFocusCS {
         this.updateIndicator(true);
       },
       true
+    );
+  }
+
+  registerFrame(): void {
+    if (this.frameId >= 0) {
+      return;
+    }
+
+    chrome?.runtime?.sendMessage(
+      {
+        command: 'registerFrame',
+      } as PanelIntercom,
+      (response: FrameInfo) => {
+        this.frameId = response.frameId;
+      }
     );
   }
 
@@ -331,30 +337,33 @@ class NerdeFocusCS {
   }
 
   updateFocus(): void {
-    if (!this.showIndicator && !this.captureFocus) {
+    if (!this.captureFocus && !this.showIndicator) {
       return;
     }
 
-    if (this.activeElement != document.activeElement) {
-      this.activeElement = document.activeElement;
-      if (this.captureFocus) {
-        this.sendFocusState();
-      }
+    const activeElement = document.activeElement;
+    if (this.activeElement === activeElement) {
+      return;
     }
 
-    if (this.showIndicator) {
-      this.updateIndicator(false);
-      this.resizeObserver.disconnect();
-      this.resizeObserver.observe(this.activeElement as HTMLElement);
-      this.intersectionObserver.disconnect();
-      this.intersectionObserver.observe(this.activeElement as HTMLElement);
-      this.mutationObserver.disconnect();
-      this.mutationObserver.observe(this.activeElement as HTMLElement, {
-        attributes: true,
-        childList: false,
-        subtree: false,
-      });
+    this.activeElement = activeElement;
+    this.sendFocusState();
+
+    if (!this.showIndicator) {
+      return;
     }
+
+    this.updateIndicator(false);
+    this.resizeObserver.disconnect();
+    this.resizeObserver.observe(this.activeElement as HTMLElement);
+    this.intersectionObserver.disconnect();
+    this.intersectionObserver.observe(this.activeElement as HTMLElement);
+    this.mutationObserver.disconnect();
+    this.mutationObserver.observe(this.activeElement as HTMLElement, {
+      attributes: true,
+      childList: false,
+      subtree: false,
+    });
   }
 
   updateIndicator(suppressAnimation: boolean = false): void {
@@ -443,8 +452,9 @@ class NerdeFocusCS {
       }
     );
 
-    this.registerFrame();
     this.registerListeners();
+    this.registerFrame();
+    this.sendPageLoad();
   }
 }
 

@@ -29,7 +29,6 @@ export interface PageInfo {
 
 export interface PanelIntercom {
   command:
-    | 'getState'
     | 'setState'
     | 'updateFocus'
     | 'inspectElement'
@@ -98,20 +97,18 @@ class NerdeFocusPanel {
         }
         switch (request.command) {
           case 'updateFocus':
-            if (sender.frameId != null) {
-              if (this.state.activeFrame !== sender.frameId) {
-                this.state.activeFrame = sender.frameId;
-                this.sendState();
-              }
+            if (
+              sender.frameId != null &&
+              this.state.activeFrame !== sender.frameId
+            ) {
+              this.state.activeFrame = sender.frameId;
+              this.sendState();
             }
             this.appendFocusEvent(request.payload as FocusState);
             break;
           case 'pageLoaded':
             this.sendState();
             this.appendPageEvent(request.payload as PageInfo);
-            break;
-          case 'getState':
-            sendResponse(this.state);
             break;
           default:
             break;
@@ -200,7 +197,7 @@ class NerdeFocusPanel {
   }
 
   appendPageEvent(event: PageInfo): void {
-    if(event.isInFrame){
+    if (event.isInFrame) {
       return;
     }
 
@@ -275,6 +272,11 @@ class NerdeFocusPanel {
       'click',
       this.handleAboutButton.bind(this)
     );
+    window.addEventListener('beforeunload', () => {
+      this.state.recording = false;
+      this.state.visible = false;
+      this.sendState();
+    });
 
     this.startListener();
     this.updateUI();
