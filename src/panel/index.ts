@@ -95,6 +95,7 @@ class NerdeFocusPanel {
         if (sender.tab?.id !== tabId) {
           return;
         }
+        console.log(request,sender);
         switch (request.command) {
           case 'updateFocus':
             if (

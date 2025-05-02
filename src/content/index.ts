@@ -199,18 +199,13 @@ class NerdeFocusCS {
     this.indicatorColor = state.color;
     this.animateIndicator = state.animate;
     this.captureFocus = state.recording;
+    this.showIndicator = state.visible;
 
-    const shouldShowIndicator =
-      state.visible && this.frameId === state.activeFrame;
-
-    if (this.showIndicator !== shouldShowIndicator) {
-      this.showIndicator = shouldShowIndicator;
-      if (this.showIndicator) {
-        this.updateFocus();
-        this.insertIndicator();
-      } else {
-        this.removeIndicator();
-      }
+    if (this.showIndicator) {
+      this.updateFocus();
+      this.insertIndicator();
+    } else {
+      this.removeIndicator();
     }
 
     this.updateIndicator();
@@ -270,7 +265,6 @@ class NerdeFocusCS {
       'focus',
       () => {
         this.updateFocus();
-        this.checkReset();
       },
       true
     );
@@ -403,8 +397,8 @@ class NerdeFocusCS {
     elementBox.outline = `${this.borderWidth}px solid ${this.indicatorColor}`;
     elementBox.transition =
       !suppressAnimation && this.animateIndicator
-        ? 'all 0.2s ease-in-out'
-        : 'none';
+        ? 'all 200ms ease-in-out'
+        : 'all 10ms ease-in';
 
     const indicator = this.getIndicator();
     if (!indicator) {
@@ -452,9 +446,10 @@ class NerdeFocusCS {
       }
     );
 
-    this.registerListeners();
     this.registerFrame();
+    this.registerListeners();
     this.sendPageLoad();
+    this.updateFocus();
   }
 }
 
