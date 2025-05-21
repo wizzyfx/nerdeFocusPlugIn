@@ -1,4 +1,5 @@
 import './index.less';
+import './components/toolbar';
 
 export interface ContentScriptState {
   color: string;
@@ -94,7 +95,7 @@ class NerdeFocusPanel {
         if (sender.tab?.id !== tabId) {
           return;
         }
-        console.log(request, sender);
+        console.log(request,sender);
         switch (request.command) {
           case 'updateFocus':
             if (
@@ -119,10 +120,6 @@ class NerdeFocusPanel {
 
   sendState(): void {
     chrome?.tabs?.query({ active: true, currentWindow: true }, (tabs) => {
-      if (!tabs || !tabs[0]) {
-        return;
-      }
-
       chrome?.tabs?.sendMessage(<number>tabs[0].id, {
         command: 'setState',
         payload: this.state,

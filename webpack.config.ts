@@ -12,16 +12,14 @@ const devServer: DevServerConfiguration = {
   liveReload: true,
 };
 
-const staticPages: HtmlWebpackPlugin[] = ['devtools', 'panel', 'popup'].map(
-  (page) => {
-    return new HtmlWebpackPlugin({
-      filename: `${page}.html`,
-      template: path.join(__dirname, 'src', page, 'index.html'),
-      cache: false,
-      chunks: [page],
-    });
-  }
-);
+const staticPages: HtmlWebpackPlugin[] = ['devtools', 'panel'].map((page) => {
+  return new HtmlWebpackPlugin({
+    filename: `${page}.html`,
+    template: path.join(__dirname, 'src', page, 'index.html'),
+    cache: false,
+    chunks: [page],
+  });
+});
 
 const createManifest: CopyWebpackPlugin = new CopyWebpackPlugin({
   patterns: [
@@ -61,7 +59,6 @@ const config: Configuration = {
     panel: path.join(__dirname, 'src', 'panel', 'index.ts'),
     devtools: path.join(__dirname, 'src', 'devtools', 'index.ts'),
     service: path.join(__dirname, 'src', 'service', 'index.ts'),
-    popup: path.join(__dirname, 'src', 'popup', 'index.ts'),
   },
   mode: 'development',
   devtool: 'source-map',
@@ -70,15 +67,13 @@ const config: Configuration = {
       {
         test: /\.(ts|js)$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'esbuild-loader',
-            options: {
-              loader: 'ts',
-              target: 'es6',
-            },
+        use: [{
+          loader: "esbuild-loader",
+          options: {
+            loader: "ts",
+            target: "es6",
           },
-        ],
+        }],
       },
       {
         test: /\.less$/i,
